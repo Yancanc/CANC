@@ -22,27 +22,77 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: rgba(
+    0,
+    0,
+    0,
+    0
+  ); /* Remove o destaque ao tocar em elementos no iOS */
+  -webkit-touch-callout: none; /* Desativa o menu de contexto ao pressionar e segurar no iOS */
+  touch-action: manipulation; /* Melhora a responsividade do toque */
+  position: fixed; /* Impede o comportamento de bounce no iOS */
+  width: 100%;
+
+  /* Ajustes para iOS */
+  @supports (-webkit-touch-callout: none) {
+    /* Apenas para dispositivos iOS */
+    height: -webkit-fill-available;
+
+    /* Corrige problemas com 100vh no iOS */
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Ajustes para inputs em iOS */
+input,
+button,
+textarea,
+select {
+  -webkit-appearance: none; /* Remove a aparência padrão do iOS */
+  border-radius: 0; /* Remove bordas arredondadas em iOS */
+  font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
+  touch-action: manipulation; /* Melhora a responsividade do toque */
 }
 
 /* Desktop */
 .desktop {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 40px); /* Altura total menos a altura da taskbar */
+  height: calc(
+    var(--vh, 1vh) * 100 - 40px
+  ); /* Usando a variável --vh para iOS */
   position: relative;
   overflow: hidden;
   background-color: $win98-bg;
   background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5V0zm1 5v1H5v-1h1z'/%3E%3C/g%3E%3C/svg%3E");
+  box-sizing: border-box;
+  padding-bottom: 40px; /* Espaço para a taskbar */
+  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
+
+  @media (max-width: $mobile) {
+    height: calc(100vh - 30px); /* Ajuste para taskbar menor em mobile */
+    height: calc(
+      var(--vh, 1vh) * 100 - 30px
+    ); /* Usando a variável --vh para iOS */
+    padding-bottom: 30px;
+  }
+
+  /* Ajustes para iOS */
+  @supports (-webkit-touch-callout: none) {
+    /* Corrige problemas com 100vh no iOS */
+    height: calc(100% - 40px);
+
+    @media (max-width: $mobile) {
+      height: calc(100% - 30px);
+    }
+  }
 }
 
 .win98-desktop {
   width: 100%;
-  height: calc(100vh - 40px); // Subtract taskbar height
+  height: 100%; /* Usa 100% da altura do container pai */
   position: relative;
   overflow: hidden;
-
-  @media (max-width: $mobile) {
-    height: calc(100vh - 30px); // Smaller taskbar on mobile
-  }
 }
 
 /* Windows 98 Button Style */
@@ -86,20 +136,99 @@ body {
   flex-direction: column;
   z-index: 10;
   overflow: hidden;
+  max-height: calc(
+    100vh - 60px
+  ); /* Evita que a janela fique maior que a área visível */
+  max-height: calc(
+    var(--vh, 1vh) * 100 - 60px
+  ); /* Usando a variável --vh para iOS */
+  transition: all 0.2s ease-out; /* Adiciona transição suave para mudanças de tamanho/posição */
+  -webkit-transform: translateZ(0); /* Força aceleração de hardware no iOS */
+  transform: translateZ(0);
+  backface-visibility: hidden; /* Melhora o desempenho no iOS */
+  perspective: 1000;
+  will-change: transform, opacity; /* Melhora o desempenho de animações */
 
-  @media (max-width: $tablet) {
+  /* Estilos específicos para iOS */
+  &.ios-device {
+    position: fixed !important; /* Usar fixed em vez de absolute para iOS */
+    -webkit-overflow-scrolling: touch;
+    transform: translate3d(0, 0, 0); /* Força aceleração de hardware no iOS */
+    -webkit-transform: translate3d(0, 0, 0);
+
+    /* Ajustes para botões em iOS */
+    .win98-title-bar .controls button {
+      min-width: 30px !important;
+      min-height: 30px !important;
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 16px !important;
+      padding: 0 !important;
+      margin: 0 2px !important;
+    }
+
+    /* Ajustes para conteúdo em iOS */
+    .win98-window-content {
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  &.maximized {
+    border-width: 2px 0 0 0; /* Remove bordas laterais e inferior quando maximizado */
+
+    @media (max-width: $mobile) {
+      width: 100% !important;
+      height: calc(100vh - 30px) !important;
+      height: calc(
+        var(--vh, 1vh) * 100 - 30px
+      ) !important; /* Usando a variável --vh para iOS */
+      left: 0 !important;
+      top: 0 !important;
+      max-height: none !important; /* Remove a limitação de altura máxima */
+      border-radius: 0 !important; /* Garante cantos quadrados */
+
+      /* Ajustes para iOS */
+      @supports (-webkit-touch-callout: none) {
+        height: calc(100% - 30px) !important;
+      }
+    }
+  }
+
+  /* Estilos para tablets */
+  @media (min-width: ($mobile + 1)) and (max-width: $tablet) {
     width: 90% !important;
     max-width: 500px;
     left: 5% !important;
+    max-height: calc(100vh - 50px);
+    max-height: calc(
+      var(--vh, 1vh) * 100 - 50px
+    ); /* Usando a variável --vh para iOS */
+
+    /* Ajustes para iOS */
+    @supports (-webkit-touch-callout: none) {
+      max-height: calc(100% - 50px);
+    }
   }
 
   @media (max-width: $mobile) {
+    /* Em dispositivos móveis, sempre em tela cheia */
     width: 100% !important;
-    max-width: none;
+    height: calc(100vh - 30px) !important;
+    height: calc(var(--vh, 1vh) * 100 - 30px) !important;
     left: 0 !important;
     top: 0 !important;
-    height: calc(100% - 30px) !important;
+    max-height: none !important;
+    border-radius: 0;
     position: fixed;
+
+    /* Ajustes para iOS */
+    @supports (-webkit-touch-callout: none) {
+      height: calc(100% - 30px) !important;
+      max-height: none !important;
+    }
   }
 }
 
@@ -112,9 +241,12 @@ body {
   display: flex;
   flex-direction: column;
   height: calc(100% - 20px);
+  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
+  -webkit-transform: translateZ(0); /* Força aceleração de hardware no iOS */
+  transform: translateZ(0);
 
   @media (max-width: $mobile) {
-    padding: 5px;
+    padding: 8px;
     height: calc(100% - 10px);
   }
 
@@ -180,10 +312,18 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none; /* Impede seleção de texto */
+  touch-action: none; /* Melhora comportamento em dispositivos touch */
+  -webkit-transform: translateZ(0); /* Força aceleração de hardware no iOS */
+  transform: translateZ(0);
 
   .title {
     font-weight: bold;
     font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 60px); /* Espaço para os botões de controle */
 
     @media (max-width: $mobile) {
       font-size: 0.75rem;
@@ -209,6 +349,15 @@ body {
       padding: 0;
       cursor: pointer;
       transition: background-color 0.1s ease;
+      min-width: unset; /* Remove largura mínima que pode causar problemas */
+      min-height: unset; /* Remove altura mínima que pode causar problemas */
+      touch-action: manipulation; /* Melhora a responsividade do toque */
+
+      @media (max-width: $mobile) {
+        width: 22px; /* Aumentado para facilitar o toque em iOS */
+        height: 22px; /* Aumentado para facilitar o toque em iOS */
+        font-size: 12px;
+      }
 
       &:hover {
         background-color: darken($win98-button, 5%);
@@ -261,5 +410,23 @@ body {
     opacity: 1;
     transform: scaleY(1);
     transform-origin: bottom;
+  }
+}
+
+/* Estilos específicos para iOS */
+@supports (-webkit-touch-callout: none) {
+  /* CSS específico para iOS */
+  .start-menu {
+    /* Força o menu a ser exibido corretamente em iOS */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+
+    /* Garante que o menu não seja cortado */
+    max-height: calc(var(--vh, 1vh) * 60) !important;
+    bottom: calc(30px + env(safe-area-inset-bottom, 0)) !important;
   }
 }

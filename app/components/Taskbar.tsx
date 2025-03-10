@@ -59,15 +59,64 @@ export default function Taskbar({
       }
     };
 
+    // Adicionar evento para cliques
     document.addEventListener("mousedown", handleClickOutside);
+    // Adicionar evento para toques (importante para dispositivos móveis)
+    document.addEventListener(
+      "touchstart",
+      handleClickOutside as EventListener
+    );
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "touchstart",
+        handleClickOutside as EventListener
+      );
     };
   }, [startMenuOpen]);
 
+  // Detectar se estamos em um dispositivo iOS
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    // Detectar iOS
+    const detectIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    };
+
+    const isIOSDevice = detectIOS();
+    setIsIOS(isIOSDevice);
+
+    // Ajustar viewport para iOS
+    if (isIOSDevice) {
+      // Força um reflow para garantir que o viewport seja aplicado corretamente
+      document.body.style.display = "none";
+      setTimeout(() => {
+        document.body.style.display = "";
+      }, 0);
+
+      // Ajusta a altura do viewport para iOS
+      const setVh = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
+
+      setVh();
+      window.addEventListener("resize", setVh);
+      window.addEventListener("orientationchange", setVh);
+
+      return () => {
+        window.removeEventListener("resize", setVh);
+        window.removeEventListener("orientationchange", setVh);
+      };
+    }
+  }, []);
+
   return (
     <>
-      <div className="win98-taskbar">
+      <div className={`win98-taskbar ${isIOS ? "ios-device" : ""}`}>
         <button
           className="win98-start-button"
           onClick={toggleStartMenu}
@@ -103,11 +152,47 @@ export default function Taskbar({
         <TaskbarClock />
       </div>
 
-      {/* Start Menu */}
+      {/* Start Menu - Renderizado fora da taskbar para evitar problemas de posicionamento */}
       {startMenuOpen && (
-        <div className="start-menu active" ref={startMenuRef}>
+        <div
+          className={`start-menu active ${isIOS ? "ios-device" : ""}`}
+          ref={startMenuRef}
+          style={{
+            position: "fixed",
+            bottom: isIOS
+              ? `calc(30px + env(safe-area-inset-bottom, 0))`
+              : window.innerWidth <= 480
+              ? "30px"
+              : "40px",
+            left: 0,
+            zIndex: 9999,
+            display: "block",
+            transform: isIOS ? "translateZ(0)" : "none",
+            WebkitTransform: isIOS ? "translateZ(0)" : "none",
+            WebkitBackfaceVisibility: isIOS ? "hidden" : "visible",
+            backfaceVisibility: isIOS ? "hidden" : "visible",
+            WebkitPerspective: isIOS ? 1000 : "none",
+            perspective: isIOS ? 1000 : "none",
+            maxHeight: isIOS
+              ? "calc(var(--vh, 1vh) * 60)"
+              : window.innerWidth <= 480
+              ? "60vh"
+              : "70vh",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
           <div className="start-menu-header">Yandows 98</div>
-          <div className="start-menu-items">
+          <div
+            className="start-menu-items"
+            style={{
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+              maxHeight: isIOS
+                ? "calc(var(--vh, 1vh) * 55)"
+                : "calc(100% - 10px)",
+            }}
+          >
             <div
               className="menu-item"
               onClick={() => handleMenuItemClick(onAboutClick)}

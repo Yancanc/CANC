@@ -2,21 +2,22 @@
 
 /* Projects Container Styles */
 .projects-container {
-  padding: 10px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .projects-header {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 
   h2 {
     color: $win98-blue;
     font-size: 1.2rem;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 }
 
@@ -24,7 +25,7 @@
   background-color: #ffffcc;
   border: 1px solid $win98-border-dark;
   padding: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   font-size: 0.8rem;
   box-shadow: inset 1px 1px 0px $win98-border-light;
 }
@@ -37,12 +38,13 @@
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 15px;
-  padding: 15px;
+  gap: 12px;
+  padding: 12px;
   overflow-y: auto;
   flex: 1;
   background-color: white;
   border: 1px solid $win98-border-dark;
+  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
 }
 
 .project-item {
@@ -146,6 +148,7 @@
   padding: 10px;
   height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
 }
 
 .project-details-header {
@@ -221,5 +224,54 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: $mobile) {
+  .projects-container {
+    padding: 8px;
+  }
+
+  .projects-header {
+    margin-bottom: 8px;
+
+    h2 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+  }
+
+  .projects-note {
+    padding: 6px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .project-item {
+    padding: 6px;
+  }
+
+  .project-icon {
+    margin-bottom: 6px;
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .project-title {
+    font-size: 0.75rem;
+  }
+
+  .project-details {
+    padding: 8px;
   }
 }

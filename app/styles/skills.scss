@@ -2,16 +2,17 @@
 
 /* Skills Window Styles */
 .skills-container {
-  padding: 15px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   background-color: $win98-window;
+  box-sizing: border-box;
 }
 
 .skills-header {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 
   h2 {
     color: $win98-blue;
@@ -30,9 +31,11 @@
 .skills-categories {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   overflow-y: auto;
   flex: 1;
+  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
+  padding-right: 4px; /* Espaço para a barra de rolagem */
 }
 
 .skills-category {
@@ -87,7 +90,7 @@
   }
 
   .skills-header {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 
     h2 {
       font-size: 1.1rem;
@@ -101,7 +104,8 @@
   }
 
   .skills-categories {
-    gap: 10px;
+    gap: 8px;
+    padding-bottom: 10px; /* Espaço extra no final para facilitar a rolagem */
   }
 
   .skills-category {

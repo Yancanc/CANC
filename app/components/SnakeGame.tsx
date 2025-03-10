@@ -2,6 +2,45 @@
 
 import { useState, useEffect, useRef } from "react";
 
+// Polyfill para o método roundRect do canvas
+if (typeof window !== "undefined") {
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radius: number | number[]
+    ) {
+      if (typeof radius === "number") {
+        radius = [radius, radius, radius, radius];
+      } else if (radius.length === 1) {
+        radius = [radius[0], radius[0], radius[0], radius[0]];
+      } else if (radius.length === 2) {
+        radius = [radius[0], radius[1], radius[0], radius[1]];
+      } else if (radius.length === 3) {
+        radius = [radius[0], radius[1], radius[2], radius[1]];
+      }
+
+      const [tl, tr, br, bl] = radius;
+
+      this.beginPath();
+      this.moveTo(x + tl, y);
+      this.lineTo(x + width - tr, y);
+      this.quadraticCurveTo(x + width, y, x + width, y + tr);
+      this.lineTo(x + width, y + height - br);
+      this.quadraticCurveTo(x + width, y + height, x + width - br, y + height);
+      this.lineTo(x + bl, y + height);
+      this.quadraticCurveTo(x, y + height, x, y + height - bl);
+      this.lineTo(x, y + tl);
+      this.quadraticCurveTo(x, y, x + tl, y);
+      this.closePath();
+
+      return this;
+    };
+  }
+}
+
 // Direções do jogo
 enum Direction {
   UP = "UP",
@@ -20,7 +59,8 @@ export default function SnakeGame() {
   // Tamanho do grid e da célula
   const GRID_SIZE = 20;
   const CELL_SIZE = 15;
-  const GAME_SPEED = 150; // ms - velocidade inicial mais lenta para facilitar
+  const GAME_SPEED_DESKTOP = 150; // ms - velocidade para desktop
+  const GAME_SPEED_MOBILE = 200; // ms - velocidade mais lenta para mobile
 
   // Referência para o canvas
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -191,9 +231,12 @@ export default function SnakeGame() {
       clearInterval(gameLoopRef.current);
     }
 
+    // Usar velocidade diferente para mobile
+    const gameSpeed = isMobile ? GAME_SPEED_MOBILE : GAME_SPEED_DESKTOP;
+
     gameLoopRef.current = setInterval(() => {
       updateGame();
-    }, GAME_SPEED);
+    }, gameSpeed);
   };
 
   // Função para pausar/despausar o jogo
@@ -305,8 +348,8 @@ export default function SnakeGame() {
     }
   };
 
-  // Função para desenhar o jogo no canvas
-  const drawGame = (cellSize = CELL_SIZE) => {
+  // Função para desenhar o jogo
+  const drawGame = (cellSize: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -316,88 +359,106 @@ export default function SnakeGame() {
     // Limpar o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Desenhar o fundo do grid
-    ctx.fillStyle = "#9bbc0f"; // Cor do GameBoy
+    // Desenhar o fundo do jogo no estilo Windows 98
+    ctx.fillStyle = "#008080"; // Cor de fundo do Windows 98
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Desenhar a grade
-    ctx.strokeStyle = "#0f380f"; // Cor escura do GameBoy
+    // Desenhar uma grade sutil
+    ctx.strokeStyle = "#20B2AA"; // Cor mais clara para a grade
     ctx.lineWidth = 0.5;
 
     for (let i = 0; i <= GRID_SIZE; i++) {
       // Linhas verticais
       ctx.beginPath();
       ctx.moveTo(i * cellSize, 0);
-      ctx.lineTo(i * cellSize, GRID_SIZE * cellSize);
+      ctx.lineTo(i * cellSize, canvas.height);
       ctx.stroke();
 
       // Linhas horizontais
       ctx.beginPath();
       ctx.moveTo(0, i * cellSize);
-      ctx.lineTo(GRID_SIZE * cellSize, i * cellSize);
+      ctx.lineTo(canvas.width, i * cellSize);
       ctx.stroke();
     }
 
     // Desenhar a comida
-    ctx.fillStyle = "#306230"; // Verde escuro do GameBoy
-    ctx.fillRect(food.x * cellSize, food.y * cellSize, cellSize, cellSize);
+    ctx.fillStyle = "#FF0000"; // Vermelho para a comida
+    ctx.beginPath();
+    ctx.arc(
+      foodRef.current.x * cellSize + cellSize / 2,
+      foodRef.current.y * cellSize + cellSize / 2,
+      cellSize / 2 - 2,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+
+    // Adicionar brilho à comida
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.arc(
+      foodRef.current.x * cellSize + cellSize / 3,
+      foodRef.current.y * cellSize + cellSize / 3,
+      cellSize / 6,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
 
     // Desenhar a cobra
-    snake.forEach((segment, index) => {
-      // Cabeça da cobra em uma cor diferente
+    snakeRef.current.forEach((segment, index) => {
+      // Cabeça da cobra em azul do Windows 98
       if (index === 0) {
-        ctx.fillStyle = "#0f380f"; // Verde muito escuro do GameBoy
+        ctx.fillStyle = "#000080"; // Azul Windows 98
       } else {
-        ctx.fillStyle = "#306230"; // Verde escuro do GameBoy
+        // Corpo da cobra em tons de azul mais claro
+        ctx.fillStyle = "#0000CD";
       }
 
-      ctx.fillRect(
-        segment.x * cellSize,
-        segment.y * cellSize,
-        cellSize,
-        cellSize
+      // Desenhar segmento com bordas arredondadas
+      ctx.beginPath();
+      ctx.roundRect(
+        segment.x * cellSize + 1,
+        segment.y * cellSize + 1,
+        cellSize - 2,
+        cellSize - 2,
+        4 // Raio do arredondamento
       );
+      ctx.fill();
 
-      // Adicionar borda aos segmentos da cobra
-      ctx.strokeStyle = "#8bac0f"; // Verde claro do GameBoy
-      ctx.lineWidth = 1;
-      ctx.strokeRect(
-        segment.x * cellSize,
-        segment.y * cellSize,
-        cellSize,
-        cellSize
-      );
+      // Adicionar brilho 3D ao segmento
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.moveTo(segment.x * cellSize + 2, segment.y * cellSize + 2);
+      ctx.lineTo(segment.x * cellSize + cellSize - 4, segment.y * cellSize + 2);
+      ctx.lineTo(segment.x * cellSize + 2, segment.y * cellSize + cellSize - 4);
+      ctx.fill();
     });
 
-    // Desenhar mensagem de game over
-    if (isGameOver) {
-      ctx.fillStyle = "rgba(15, 56, 15, 0.7)"; // Verde escuro semi-transparente
+    // Desenhar texto de game over
+    if (isGameOverRef.current) {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#9bbc0f"; // Verde claro do GameBoy
-      ctx.font = '20px "Press Start 2P", "MS Sans Serif", Arial';
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = 'bold 20px "MS Sans Serif", Arial';
       ctx.textAlign = "center";
-      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
-      ctx.font = '14px "Press Start 2P", "MS Sans Serif", Arial';
+      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 15);
+      ctx.font = 'bold 16px "MS Sans Serif", Arial';
       ctx.fillText(
-        `Comprimento: ${snakeLength}`,
+        `Pontuação: ${snakeLengthRef.current - 3}`,
         canvas.width / 2,
-        canvas.height / 2 + 10
-      );
-      ctx.fillText(
-        "Pressione ESPAÇO para reiniciar",
-        canvas.width / 2,
-        canvas.height / 2 + 40
+        canvas.height / 2 + 15
       );
     }
 
-    // Desenhar mensagem de pausa
-    if (isPaused && !isGameOver) {
-      ctx.fillStyle = "rgba(15, 56, 15, 0.7)"; // Verde escuro semi-transparente
+    // Desenhar texto de pausa
+    if (isPausedRef.current) {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#9bbc0f"; // Verde claro do GameBoy
-      ctx.font = '20px "Press Start 2P", "MS Sans Serif", Arial';
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = 'bold 20px "MS Sans Serif", Arial';
       ctx.textAlign = "center";
       ctx.fillText("PAUSADO", canvas.width / 2, canvas.height / 2);
     }
@@ -520,35 +581,63 @@ export default function SnakeGame() {
         <canvas ref={canvasRef} className="game-canvas" />
       </div>
 
-      <div className={`gameboy-controls ${isMobile ? "visible" : ""}`}>
-        <div className="gameboy-dpad">
-          <button className="dpad-button dpad-up" onClick={handleTouchUp}>
-            ▲
-          </button>
-          <button className="dpad-button dpad-left" onClick={handleTouchLeft}>
-            ◀
-          </button>
-          <div className="dpad-center"></div>
-          <button className="dpad-button dpad-right" onClick={handleTouchRight}>
-            ▶
-          </button>
-          <button className="dpad-button dpad-down" onClick={handleTouchDown}>
-            ▼
-          </button>
-        </div>
+      {/* Controles simplificados para mobile */}
+      {isMobile && (
+        <div className="mobile-controls">
+          <div className="controls-row">
+            <button
+              className="control-button up-button"
+              onClick={handleTouchUp}
+              onTouchStart={handleTouchUp}
+            >
+              ▲
+            </button>
+          </div>
+          <div className="controls-row">
+            <button
+              className="control-button left-button"
+              onClick={handleTouchLeft}
+              onTouchStart={handleTouchLeft}
+            >
+              ◀
+            </button>
+            <button
+              className="control-button right-button"
+              onClick={handleTouchRight}
+              onTouchStart={handleTouchRight}
+            >
+              ▶
+            </button>
+          </div>
+          <div className="controls-row">
+            <button
+              className="control-button down-button"
+              onClick={handleTouchDown}
+              onTouchStart={handleTouchDown}
+            >
+              ▼
+            </button>
+          </div>
 
-        <div className="gameboy-actions">
-          {isGameOver ? (
-            <button className="action-button" onClick={startGame}>
-              RESTART
-            </button>
-          ) : (
-            <button className="action-button" onClick={togglePause}>
-              {isPaused ? "PLAY" : "PAUSE"}
-            </button>
-          )}
+          <div className="action-buttons">
+            {isGameOver ? (
+              <button
+                className="win98-button restart-button"
+                onClick={startGame}
+              >
+                REINICIAR
+              </button>
+            ) : (
+              <button
+                className="win98-button pause-button"
+                onClick={togglePause}
+              >
+                {isPaused ? "CONTINUAR" : "PAUSAR"}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="game-instructions">
         <p className="desktop-instructions">
@@ -556,12 +645,12 @@ export default function SnakeGame() {
           pausar/continuar.
         </p>
         <p className="mobile-instructions">
-          Use os controles na tela para jogar.
+          Use os botões de direção para jogar.
         </p>
         {isGameOver && (
           <p className="restart-instructions">
             {isMobile
-              ? "Toque no botão RESTART para jogar novamente."
+              ? "Toque no botão REINICIAR para jogar novamente."
               : "Pressione ESPAÇO para reiniciar o jogo."}
           </p>
         )}
@@ -625,128 +714,82 @@ export default function SnakeGame() {
           justify-content: center;
           align-items: center;
           margin: 10px 0;
-          background-color: #9bbc0f; /* GameBoy screen color */
-          border: 2px solid #808080;
-          border-top-color: #000000;
-          border-left-color: #000000;
-          box-shadow: inset 1px 1px 0px #000000, inset -1px -1px 0px #dfdfdf;
+          background-color: #c0c0c0;
+          border-width: 2px;
+          border-style: solid;
+          border-color: #808080 #ffffff #ffffff #808080;
+          box-shadow: inset 1px 1px 0px #000000;
           overflow: hidden;
           min-height: 200px;
+          padding: 8px;
         }
 
         .game-canvas {
           max-width: 100%;
           max-height: 100%;
           display: block;
+          border-width: 2px;
+          border-style: solid;
+          border-color: #000000 #dfdfdf #dfdfdf #000000;
         }
 
-        /* GameBoy style controls */
-        .gameboy-controls {
-          display: none;
-          margin: 15px auto;
-          width: 100%;
-          max-width: 320px;
-          box-sizing: border-box;
-        }
-
-        .gameboy-controls.visible {
+        /* Controles simplificados para mobile */
+        .mobile-controls {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 15px;
+          margin-top: 15px;
+          width: 100%;
         }
 
-        .gameboy-dpad {
-          position: relative;
-          width: 150px;
-          height: 150px;
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          grid-template-rows: 1fr 1fr 1fr;
+        .controls-row {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin: 5px 0;
         }
 
-        .dpad-button {
-          width: 50px;
-          height: 50px;
-          background-color: #2e3a59;
-          color: white;
-          border: none;
+        .control-button {
+          width: 60px;
+          height: 60px;
+          background-color: #c0c0c0;
+          color: #000000;
+          font-size: 24px;
+          border-width: 2px;
+          border-style: solid;
+          border-color: #ffffff #808080 #808080 #ffffff;
+          box-shadow: 1px 1px 0px #000000;
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 20px;
           cursor: pointer;
           user-select: none;
           -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
         }
 
-        .dpad-center {
-          grid-column: 2;
-          grid-row: 2;
-          width: 50px;
-          height: 50px;
-          background-color: #2e3a59;
+        .control-button:active {
+          border-color: #808080 #ffffff #ffffff #808080;
+          box-shadow: none;
+          transform: translateY(1px);
         }
 
-        .dpad-up {
-          grid-column: 2;
-          grid-row: 1;
-          border-radius: 8px 8px 0 0;
-        }
-
-        .dpad-left {
-          grid-column: 1;
-          grid-row: 2;
-          border-radius: 8px 0 0 8px;
-        }
-
-        .dpad-right {
-          grid-column: 3;
-          grid-row: 2;
-          border-radius: 0 8px 8px 0;
-        }
-
-        .dpad-down {
-          grid-column: 2;
-          grid-row: 3;
-          border-radius: 0 0 8px 8px;
-        }
-
-        .dpad-button:active {
-          background-color: #1e2a49;
-          transform: scale(0.95);
-        }
-
-        .gameboy-actions {
+        .action-buttons {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          margin-top: 15px;
         }
 
-        .action-button {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          background-color: #a52a2a;
-          color: white;
-          border: none;
-          font-size: 16px;
+        .restart-button,
+        .pause-button {
+          min-width: 120px;
+          height: 40px;
+          font-size: 14px;
           font-weight: bold;
-          cursor: pointer;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          box-shadow: 0 4px 0 #8b0000;
-          -webkit-tap-highlight-color: transparent;
-        }
-
-        .action-button:active {
-          transform: translateY(4px);
-          box-shadow: 0 0 0 #8b0000;
-        }
-
-        .touch-controls {
-          display: none;
+          text-transform: uppercase;
         }
 
         .game-instructions {
@@ -757,12 +800,6 @@ export default function SnakeGame() {
           text-align: center;
           padding: 0 5px;
           box-sizing: border-box;
-        }
-
-        .restart-button {
-          margin-top: 10px;
-          padding: 8px 16px;
-          font-size: 14px;
         }
 
         .mobile-instructions {
@@ -794,6 +831,19 @@ export default function SnakeGame() {
 
           .game-canvas-container {
             margin: 5px 0;
+          }
+
+          .control-button {
+            width: 75px;
+            height: 75px;
+            font-size: 30px;
+          }
+
+          .restart-button,
+          .pause-button {
+            min-width: 160px;
+            height: 55px;
+            font-size: 16px;
           }
         }
       `}</style>

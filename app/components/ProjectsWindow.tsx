@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Win98Window from "./Win98Window";
 
 interface ProjectsWindowProps {
   onClose: () => void;
@@ -116,108 +115,94 @@ export default function ProjectsWindow({
   };
 
   return (
-    <Win98Window
-      id="projects"
-      title="Projetos"
-      onClose={onClose}
-      onMinimize={onMinimize}
-      isMinimized={isMinimized}
-      initialPosition={{ x: 150, y: 80 }}
-      initialSize={{ width: 600, height: 450 }}
-    >
-      <div className="projects-container">
-        {!selectedProject ? (
-          <>
-            <div className="projects-header">
-              <p className="mb-2">Selecione um projeto para ver detalhes:</p>
-            </div>
-            <div className="projects-grid">
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="project-item"
-                  onClick={() => handleProjectClick(project)}
-                >
-                  <div className="project-icon">
-                    <svg
-                      width="32"
-                      height="32"
-                      viewBox="0 0 32 32"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M4 8H14L16 10H28V24H4V8Z" fill="#FFCC66" />
-                      <path
-                        d="M4 8H14L16 10H28V11H4V8Z"
-                        fill="#FFFFFF"
-                        opacity="0.5"
-                      />
-                      <path
-                        d="M4 24H28V23H4V24Z"
-                        fill="#996600"
-                        opacity="0.5"
-                      />
-                    </svg>
-                  </div>
-                  <div className="project-title">{project.title}</div>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="project-details">
-            <div className="project-details-header">
-              <h3>{selectedProject.title}</h3>
-              <div className="project-actions">
-                <button
-                  className="win98-button back-button"
-                  onClick={() => setSelectedProject(null)}
-                >
-                  Voltar
-                </button>
-                <button
-                  className="win98-button visit-button"
-                  onClick={() => handleVisitSite(selectedProject.url)}
-                >
-                  Visitar Site
-                </button>
-              </div>
-            </div>
-            <div className="project-details-content">
-              <div className="detail-section">
-                <div className="section-title">Descrição</div>
-                <p>{selectedProject.description}</p>
-              </div>
-              <div className="detail-section">
-                <div className="section-title">Minha Contribuição</div>
-                <p>{selectedProject.contribution}</p>
-              </div>
-              <div className="detail-section">
-                <div className="section-title">Tecnologias Utilizadas</div>
-                <div className="technology-tags">
-                  {selectedProject.technologies.map((tech, index) => (
-                    <span key={index} className="technology-tag">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="detail-section">
-                <div className="section-title">URL</div>
-                <p className="project-url">
-                  <a
-                    href={selectedProject.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+    <div className="projects-container">
+      {!selectedProject ? (
+        <>
+          <div className="projects-header">
+            <p className="mb-2">Selecione um projeto para ver detalhes:</p>
+          </div>
+          <div className="projects-grid">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="project-item"
+                onClick={() => handleProjectClick(project)}
+              >
+                <div className="project-icon">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    {selectedProject.url}
-                  </a>
-                </p>
+                    <path d="M4 8H14L16 10H28V24H4V8Z" fill="#FFCC66" />
+                    <path
+                      d="M4 8H14L16 10H28V11H4V8Z"
+                      fill="#FFFFFF"
+                      opacity="0.5"
+                    />
+                    <path d="M4 24H28V23H4V24Z" fill="#996600" opacity="0.5" />
+                  </svg>
+                </div>
+                <div className="project-title">{project.title}</div>
               </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="project-details">
+          <div className="project-details-header">
+            <h3>{selectedProject.title}</h3>
+            <div className="project-actions">
+              <button
+                className="win98-button back-button"
+                onClick={() => setSelectedProject(null)}
+              >
+                Voltar
+              </button>
+              <button
+                className="win98-button visit-button"
+                onClick={() => handleVisitSite(selectedProject.url)}
+              >
+                Visitar Site
+              </button>
             </div>
           </div>
-        )}
-      </div>
-    </Win98Window>
+          <div className="project-details-content">
+            <div className="detail-section">
+              <div className="section-title">Descrição</div>
+              <p>{selectedProject.description}</p>
+            </div>
+            <div className="detail-section">
+              <div className="section-title">Minha Contribuição</div>
+              <p>{selectedProject.contribution}</p>
+            </div>
+            <div className="detail-section">
+              <div className="section-title">Tecnologias Utilizadas</div>
+              <div className="technology-tags">
+                {selectedProject.technologies.map((tech, index) => (
+                  <span key={index} className="technology-tag">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="detail-section">
+              <div className="section-title">URL</div>
+              <p className="project-url">
+                <a
+                  href={selectedProject.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {selectedProject.url}
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

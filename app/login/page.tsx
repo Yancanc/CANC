@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import "../styles/login.scss";
 
@@ -12,6 +12,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [startTransition, setStartTransition] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const videoRef = useRef<HTMLIFrameElement>(null);
+  const [showRickRoll, setShowRickRoll] = useState(false);
 
   // Atualizar o relógio a cada minuto
   useEffect(() => {
@@ -27,6 +29,31 @@ export default function Login() {
     setError("");
   };
 
+  // Função para abrir o Rick Roll
+  const openRickRoll = () => {
+    // Mostrar o vídeo incorporado na própria página
+    setShowRickRoll(true);
+
+    // Tentar abrir em uma nova aba também (como fallback)
+    try {
+      const newWindow = window.open(
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "_blank"
+      );
+
+      // Se o navegador bloqueou o pop-up, newWindow será null
+      if (
+        !newWindow ||
+        newWindow.closed ||
+        typeof newWindow.closed === "undefined"
+      ) {
+        console.log("Pop-up bloqueado, usando apenas o vídeo incorporado");
+      }
+    } catch (e) {
+      console.error("Erro ao abrir o vídeo:", e);
+    }
+  };
+
   const handleLogin = () => {
     setError("");
 
@@ -35,7 +62,14 @@ export default function Login() {
       return;
     }
 
-    if (selectedUser === "admin" && password !== "admin123") {
+    // Easter egg: Se alguém digitar qualquer senha, abrir o Rick Roll
+    if (password.length > 0) {
+      openRickRoll();
+      return;
+    }
+
+    // Apenas o usuário CANC pode entrar sem senha
+    if (selectedUser === "admin") {
       setError("Senha incorreta");
       return;
     }
@@ -49,6 +83,17 @@ export default function Login() {
     setTimeout(() => {
       router.push("/desktop");
     }, 2000);
+  };
+
+  // Função para lidar com o envio de senha pelo Enter
+  const handlePasswordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if (password.length > 0) {
+        openRickRoll();
+      } else {
+        handleLogin();
+      }
+    }
   };
 
   // Formatar a data no estilo do Windows 98
@@ -67,6 +112,21 @@ export default function Login() {
 
   return (
     <div className={`login-screen ${startTransition ? "fade-out" : ""}`}>
+      {showRickRoll && (
+        <div className="rick-roll-overlay">
+          <iframe
+            ref={videoRef}
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+            title="Rick Astley - Never Gonna Give You Up"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      )}
+
       <div className="login-logo">
         <h1>Yandows 98</h1>
         <p>Microloft® Yandows 98</p>
@@ -117,7 +177,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder=""
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                onKeyDown={handlePasswordKeyDown}
               />
               {error && <div className="error-message">{error}</div>}
             </div>
@@ -159,6 +219,19 @@ export default function Login() {
           to {
             opacity: 0;
           }
+        }
+
+        .rick-roll-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
+          background-color: #000;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       `}</style>
     </div>

@@ -15,10 +15,19 @@
   padding: 0 2px;
   justify-content: space-between;
   animation: slideUp 0.3s ease-out;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 
   @media (max-width: $mobile) {
     height: 30px;
     padding: 0 1px;
+    margin-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  &.ios-device {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 1000;
   }
 }
 
@@ -37,6 +46,7 @@
   background-color: $win98-button;
   cursor: pointer;
   transition: background-color 0.1s ease;
+  flex-shrink: 0;
 
   @media (max-width: $mobile) {
     height: 26px;
@@ -61,6 +71,12 @@
       margin-right: 3px;
     }
   }
+
+  span {
+    @media (max-width: 360px) {
+      display: none;
+    }
+  }
 }
 
 /* Taskbar Divider */
@@ -69,6 +85,7 @@
   height: 70%;
   background-color: $win98-border-dark;
   margin: 0 4px;
+  flex-shrink: 0;
 
   @media (max-width: $mobile) {
     margin: 0 2px;
@@ -85,41 +102,56 @@
   padding: 2px 8px;
   font-size: 0.8rem;
   margin-left: auto;
+  flex-shrink: 0;
+  min-width: 45px;
+  text-align: center;
 
   @media (max-width: $mobile) {
     padding: 1px 5px;
     font-size: 0.7rem;
+    min-width: 40px;
   }
 }
 
 /* Start Menu */
 .start-menu {
-  position: absolute;
+  position: fixed;
   bottom: 40px;
   left: 0;
-  width: 200px;
+  width: 220px;
   background-color: $win98-button;
   border-width: 2px;
   border-style: solid;
   border-color: $win98-border-light $win98-border-dark $win98-border-dark
     $win98-border-light;
   display: none;
-  z-index: 0;
+  z-index: 9999;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  max-height: 70vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 
   @media (max-width: $mobile) {
     bottom: 30px;
-    width: 180px;
+    width: 200px;
+    max-height: 60vh;
+  }
+
+  &.ios-device {
+    bottom: 30px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    max-height: calc(var(--vh, 1vh) * 50);
   }
 
   &.active {
-    display: block;
+    display: block !important;
     animation: startMenuOpen 0.2s ease-out;
   }
 
   .start-menu-header {
     background-color: $win98-blue;
     color: white;
-    padding-top: px;
+    padding: 3px;
     font-weight: bold;
     height: 100%;
     writing-mode: vertical-rl;
@@ -130,10 +162,13 @@
     top: 0;
     bottom: 0;
     width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     @media (max-width: $mobile) {
       width: 18px;
-      padding: 3px;
+      padding: 2px;
       font-size: 0.8rem;
     }
   }
@@ -141,6 +176,8 @@
   .start-menu-items {
     margin-left: 30px;
     padding: 5px 0;
+    overflow-y: auto;
+    max-height: calc(100% - 10px);
 
     @media (max-width: $mobile) {
       margin-left: 25px;
@@ -148,15 +185,16 @@
     }
 
     .menu-item {
-      padding: 4px 8px;
+      padding: 5px 8px;
       display: flex;
       align-items: center;
       cursor: pointer;
       transition: background-color 0.1s ease;
+      white-space: nowrap;
 
       @media (max-width: $mobile) {
-        padding: 3px 6px;
-        font-size: 0.8rem;
+        padding: 10px 6px;
+        font-size: 0.85rem;
       }
 
       &:hover {
@@ -196,15 +234,19 @@
   margin: 0 4px;
   overflow-x: auto;
   max-width: calc(100% - 200px);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 
   @media (max-width: $mobile) {
-    max-width: calc(100% - 150px);
+    max-width: calc(100% - 120px);
     margin: 0 2px;
+    gap: 1px;
   }
 
   &::-webkit-scrollbar {
     height: 0;
     width: 0;
+    display: none;
   }
 }
 
@@ -226,12 +268,18 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 
   @media (max-width: $mobile) {
     height: 26px;
-    min-width: 100px;
+    min-width: 80px;
+    max-width: 120px;
     font-size: 0.7rem;
     padding: 0 5px;
+  }
+
+  @media (max-width: 360px) {
+    min-width: 70px;
   }
 
   &:hover {

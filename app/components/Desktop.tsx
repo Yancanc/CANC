@@ -71,6 +71,7 @@ export default function Desktop() {
       contact: { x: 150, y: 100 },
       skills: { x: 200, y: 150 },
       portfolio: { x: 250, y: 200 },
+      projects: { x: 300, y: 150 },
       webcam: { x: 350, y: 150 },
       "snake-game": { x: 400, y: 200 },
     };
@@ -109,6 +110,7 @@ export default function Desktop() {
       contact: { width: defaultWidth, height: defaultHeight },
       skills: { width: defaultWidth, height: defaultHeight },
       portfolio: { width: defaultWidth, height: defaultHeight },
+      projects: { width: defaultWidth, height: defaultHeight },
       webcam: { width: 500, height: 450 },
       "snake-game": { width: 450, height: 500 },
     };
@@ -116,30 +118,68 @@ export default function Desktop() {
     return sizes[windowName] || { width: defaultWidth, height: defaultHeight };
   };
 
+  // Verificar se estamos em um dispositivo móvel
+  const isMobile = () => {
+    return windowDimensions.width < 768;
+  };
+
+  // Função para limitar o número de janelas abertas em dispositivos móveis
   const handleOpenWindow = (windowName: string) => {
+    // Não permitir abrir o Snake Game em dispositivos móveis
+    if (windowName === "snake-game" && isMobile()) {
+      return;
+    }
+
     const windowTitles: Record<string, string> = {
       about: "Sobre Mim",
       contact: "Contato",
       skills: "Habilidades",
       portfolio: "Portfólio",
+      projects: "Projetos",
     };
 
-    if (!openWindows.some((w) => w.id === windowName)) {
+    // Em dispositivos móveis, fechar outras janelas ao abrir uma nova
+    if (isMobile()) {
+      // Manter apenas a janela que está sendo aberta
       setOpenWindows([
-        ...openWindows,
         {
           id: windowName,
           title: windowTitles[windowName] || windowName,
           isMinimized: false,
         },
       ]);
-    }
 
-    // Se a janela estiver minimizada, restaurá-la
-    if (minimizedWindows.includes(windowName)) {
-      setMinimizedWindows(
-        minimizedWindows.filter((name) => name !== windowName)
-      );
+      // Limpar janelas minimizadas
+      setMinimizedWindows([]);
+
+      // Fechar componentes extras em dispositivos móveis
+      if (windowName !== "webcam" && showWebCam) {
+        setShowWebCam(false);
+      }
+
+      // Snake Game não deve ser aberto em dispositivos móveis
+      if (showSnakeGame) {
+        setShowSnakeGame(false);
+      }
+    } else {
+      // Comportamento normal para desktop
+      if (!openWindows.some((w) => w.id === windowName)) {
+        setOpenWindows([
+          ...openWindows,
+          {
+            id: windowName,
+            title: windowTitles[windowName] || windowName,
+            isMinimized: false,
+          },
+        ]);
+      }
+
+      // Se a janela estiver minimizada, restaurá-la
+      if (minimizedWindows.includes(windowName)) {
+        setMinimizedWindows(
+          minimizedWindows.filter((name) => name !== windowName)
+        );
+      }
     }
   };
 
@@ -159,7 +199,15 @@ export default function Desktop() {
   };
 
   const toggleWebCam = () => setShowWebCam(!showWebCam);
-  const toggleSnakeGame = () => setShowSnakeGame(!showSnakeGame);
+
+  // Modificar a função toggleSnakeGame para verificar se é mobile
+  const toggleSnakeGame = () => {
+    // Se for mobile, não faz nada
+    if (isMobile()) {
+      return;
+    }
+    setShowSnakeGame(!showSnakeGame);
+  };
 
   // Atualizar a taskbar quando os componentes extras são abertos/fechados
   useEffect(() => {
@@ -178,18 +226,28 @@ export default function Desktop() {
         newOpenWindows.splice(webcamIndex, 1);
       }
 
-      // Verificar e atualizar Snake Game
-      const snakeGameIndex = newOpenWindows.findIndex(
-        (w) => w.id === "snake-game"
-      );
-      if (showSnakeGame && snakeGameIndex === -1) {
-        newOpenWindows.push({
-          id: "snake-game",
-          title: "Snake Game",
-          isMinimized: minimizedWindows.includes("snake-game"),
-        });
-      } else if (!showSnakeGame && snakeGameIndex !== -1) {
-        newOpenWindows.splice(snakeGameIndex, 1);
+      // Verificar e atualizar Snake Game - apenas para desktop
+      if (!isMobile()) {
+        const snakeGameIndex = newOpenWindows.findIndex(
+          (w) => w.id === "snake-game"
+        );
+        if (showSnakeGame && snakeGameIndex === -1) {
+          newOpenWindows.push({
+            id: "snake-game",
+            title: "Snake Game",
+            isMinimized: minimizedWindows.includes("snake-game"),
+          });
+        } else if (!showSnakeGame && snakeGameIndex !== -1) {
+          newOpenWindows.splice(snakeGameIndex, 1);
+        }
+      } else {
+        // Em dispositivos móveis, remover o Snake Game se estiver presente
+        const snakeGameIndex = newOpenWindows.findIndex(
+          (w) => w.id === "snake-game"
+        );
+        if (snakeGameIndex !== -1) {
+          newOpenWindows.splice(snakeGameIndex, 1);
+        }
       }
 
       // Atualizar o estado apenas se houver mudanças
@@ -199,7 +257,7 @@ export default function Desktop() {
     };
 
     updateOpenWindows();
-  }, [showWebCam, showSnakeGame, minimizedWindows]);
+  }, [showWebCam, showSnakeGame, minimizedWindows, windowDimensions]);
 
   // Atualizar o estado isMinimized das janelas quando minimizedWindows mudar
   useEffect(() => {
@@ -210,6 +268,13 @@ export default function Desktop() {
       }))
     );
   }, [minimizedWindows]);
+
+  // Adicionar um efeito para fechar o Snake Game em dispositivos móveis
+  useEffect(() => {
+    if (isMobile() && showSnakeGame) {
+      setShowSnakeGame(false);
+    }
+  }, [windowDimensions]);
 
   return (
     <div className="desktop">
@@ -240,18 +305,6 @@ export default function Desktop() {
             onClick={() => handleOpenWindow("projects")}
           />
           <DesktopIcon
-            name="Contato"
-            svgIcon={
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/modem-5.png"
-                alt="Contato"
-                width="32"
-                height="32"
-              />
-            }
-            onClick={() => handleOpenWindow("contact")}
-          />
-          <DesktopIcon
             name="Habilidades"
             svgIcon={
               <img
@@ -276,10 +329,22 @@ export default function Desktop() {
             onClick={() => handleOpenWindow("portfolio")}
           />
           <DesktopIcon
+            name="Contato"
+            svgIcon={
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/modem-5.png"
+                alt="Contato"
+                width="32"
+                height="32"
+              />
+            }
+            onClick={() => handleOpenWindow("contact")}
+          />
+          <DesktopIcon
             name="WebCam"
             svgIcon={
               <img
-                src="https://win98icons.alexmeub.com/icons/png/camera-2.png"
+                src="https://win98icons.alexmeub.com/icons/png/camera-0.png"
                 alt="WebCam"
                 width="32"
                 height="32"
@@ -287,21 +352,26 @@ export default function Desktop() {
             }
             onClick={toggleWebCam}
           />
-          <DesktopIcon
-            name="Snake Game"
-            svgIcon={
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/msagent_file-1.png"
-                alt="Snake Game"
-                width="32"
-                height="32"
-              />
-            }
-            onClick={toggleSnakeGame}
-          />
+
+          {/* Mostrar o ícone do Snake Game apenas em desktop */}
+          {!isMobile() && (
+            <DesktopIcon
+              name="Snake Game"
+              svgIcon={
+                <img
+                  src="https://win98icons.alexmeub.com/icons/png/joystick-0.png"
+                  alt="Snake Game"
+                  width="32"
+                  height="32"
+                />
+              }
+              onClick={toggleSnakeGame}
+            />
+          )}
         </div>
       </div>
 
+      {/* Janelas */}
       {openWindows.some((w) => w.id === "about") && (
         <Win98Window
           id="about"
@@ -349,11 +419,21 @@ export default function Desktop() {
       )}
 
       {openWindows.some((w) => w.id === "projects") && (
-        <ProjectsWindow
+        <Win98Window
+          id="projects"
+          title="Projetos"
           onClose={() => handleCloseWindow("projects")}
           onMinimize={() => handleMinimizeWindow("projects")}
           isMinimized={minimizedWindows.includes("projects")}
-        />
+          initialPosition={getInitialPosition("projects")}
+          initialSize={getInitialSize("projects")}
+        >
+          <ProjectsWindow
+            onClose={() => handleCloseWindow("projects")}
+            onMinimize={() => handleMinimizeWindow("projects")}
+            isMinimized={minimizedWindows.includes("projects")}
+          />
+        </Win98Window>
       )}
 
       {openWindows.some((w) => w.id === "portfolio") && (
@@ -384,7 +464,8 @@ export default function Desktop() {
         </Win98Window>
       )}
 
-      {showSnakeGame && (
+      {/* Mostrar a janela do Snake Game apenas em desktop */}
+      {showSnakeGame && !isMobile() && (
         <Win98Window
           id="snake-game"
           title="Snake Game"
@@ -392,7 +473,7 @@ export default function Desktop() {
           onMinimize={() => handleMinimizeWindow("snake-game")}
           isMinimized={minimizedWindows.includes("snake-game")}
           initialPosition={getInitialPosition(3, 1)}
-          initialSize={getInitialSize(400, 500)}
+          initialSize={getInitialSize("snake-game")}
         >
           <SnakeGame />
         </Win98Window>
