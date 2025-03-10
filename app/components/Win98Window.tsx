@@ -34,6 +34,31 @@ export default function Win98Window({
   });
   const [isClosing, setIsClosing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: 1024,
+    height: 768,
+  });
+
+  // Atualizar dimensões da janela apenas no cliente
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Definir dimensões iniciais
+    updateDimensions();
+
+    // Adicionar listener para redimensionamento
+    window.addEventListener("resize", updateDimensions);
+
+    // Limpar listener
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
+  }, []);
 
   // Efeito para animação de abertura
   useEffect(() => {
@@ -72,7 +97,12 @@ export default function Win98Window({
         size,
       });
       setPosition({ x: 0, y: 0 });
-      setSize({ width: window.innerWidth, height: window.innerHeight - 40 }); // Subtract taskbar height
+      // Ajuste para considerar a altura da taskbar
+      const taskbarHeight = windowDimensions.width <= 480 ? 30 : 40; // Responsivo para mobile
+      setSize({
+        width: windowDimensions.width,
+        height: windowDimensions.height - taskbarHeight,
+      });
       setIsMaximized(true);
     } else {
       setPosition(preMaximizeState.position);
@@ -108,6 +138,24 @@ export default function Win98Window({
     };
   }, [isDragging]);
 
+  // Ajustar tamanho da janela quando a tela for redimensionada e a janela estiver maximizada
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMaximized) {
+        const taskbarHeight = windowDimensions.width <= 480 ? 30 : 40;
+        setSize({
+          width: windowDimensions.width,
+          height: windowDimensions.height - taskbarHeight,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isMaximized, windowDimensions]);
+
   if (isMinimized) {
     return null;
   }
@@ -124,6 +172,8 @@ export default function Win98Window({
         width: `${size.width}px`,
         height: `${size.height}px`,
         zIndex: 10,
+        display: "flex",
+        flexDirection: "column",
       }}
       data-window-id={id}
     >
@@ -143,7 +193,7 @@ export default function Win98Window({
       </div>
       <div
         className="win98-window-content"
-        style={{ height: "calc(100% - 24px)", overflow: "auto" }}
+        style={{ flex: 1, overflow: "auto" }}
       >
         {children}
       </div>
