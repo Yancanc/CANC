@@ -5,8 +5,10 @@ import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
-  title: "Yan Rodrigues - Desenvolvedor Front-end",
-  description: "Portfólio de Yan Rodrigues, desenvolvedor front-end",
+  title: "Yandows 98 Portfolio",
+  description: "A Yandows 98 themed portfolio website",
+  viewport:
+    "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
 };
 
 export default function RootLayout({
