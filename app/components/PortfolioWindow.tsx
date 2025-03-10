@@ -27,10 +27,6 @@ const PortfolioWindow: React.FC = () => {
             <div className="stat-number">30+</div>
             <div className="stat-label">Pull Requests</div>
           </div>
-          <div className="stat-item">
-            <div className="stat-number">95%</div>
-            <div className="stat-label">Código Aprovado</div>
-          </div>
         </div>
 
         <div className="contributions-image">

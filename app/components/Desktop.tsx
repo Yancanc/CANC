@@ -207,7 +207,7 @@ export default function Desktop() {
             name="Currículo"
             svgIcon={
               <img
-                src="/icons/computer.png"
+                src="https://win98icons.alexmeub.com/icons/png/computer-4.png"
                 alt="Currículo"
                 width="32"
                 height="32"
@@ -219,7 +219,7 @@ export default function Desktop() {
             name="Projetos"
             svgIcon={
               <img
-                src="/icons/open-folder.png"
+                src="https://win98icons.alexmeub.com/icons/png/directory_network_conn-5.png"
                 alt="Projetos"
                 width="32"
                 height="32"
@@ -231,7 +231,7 @@ export default function Desktop() {
             name="Contato"
             svgIcon={
               <img
-                src="/icons/phone.png"
+                src="https://win98icons.alexmeub.com/icons/png/modem-5.png"
                 alt="Contato"
                 width="32"
                 height="32"
@@ -243,7 +243,7 @@ export default function Desktop() {
             name="Habilidades"
             svgIcon={
               <img
-                src="/icons/search.png"
+                src="https://win98icons.alexmeub.com/icons/png/help_book_cool-4.png"
                 alt="Habilidades"
                 width="32"
                 height="32"
@@ -255,7 +255,7 @@ export default function Desktop() {
             name="Portfólio"
             svgIcon={
               <img
-                src="/icons/world.png"
+                src="https://win98icons.alexmeub.com/icons/png/msn_cool-3.png"
                 alt="Portfólio"
                 width="32"
                 height="32"
@@ -267,7 +267,7 @@ export default function Desktop() {
             name="WebCam"
             svgIcon={
               <img
-                src="/icons/camera.png"
+                src="https://win98icons.alexmeub.com/icons/png/camera-2.png"
                 alt="WebCam"
                 width="32"
                 height="32"
@@ -279,7 +279,7 @@ export default function Desktop() {
             name="Snake Game"
             svgIcon={
               <img
-                src="/icons/team.png"
+                src="https://win98icons.alexmeub.com/icons/png/msagent_file-1.png"
                 alt="Snake Game"
                 width="32"
                 height="32"

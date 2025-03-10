@@ -74,7 +74,7 @@ export default function Taskbar({
           ref={startButtonRef}
         >
           <img
-            src="/icons/team.png"
+            src="https://win98icons.alexmeub.com/icons/png/windows_update_large-2.png"
             alt="Start"
             width="20"
             height="20"
@@ -113,7 +113,7 @@ export default function Taskbar({
               onClick={() => handleMenuItemClick(onAboutClick)}
             >
               <img
-                src="/icons/team.png"
+                src="https://win98icons.alexmeub.com/icons/png/computer-4.png"
                 alt="Currículo"
                 width="16"
                 height="16"
@@ -127,7 +127,7 @@ export default function Taskbar({
               onClick={() => handleMenuItemClick(onProjectsClick)}
             >
               <img
-                src="/icons/open-folder.png"
+                src="https://win98icons.alexmeub.com/icons/png/directory_network_conn-5.png"
                 alt="Projetos"
                 width="16"
                 height="16"
@@ -141,7 +141,7 @@ export default function Taskbar({
               onClick={() => handleMenuItemClick(onContactClick)}
             >
               <img
-                src="/icons/phone.png"
+                src="https://win98icons.alexmeub.com/icons/png/modem-5.png"
                 alt="Contato"
                 width="16"
                 height="16"
@@ -155,7 +155,7 @@ export default function Taskbar({
               onClick={() => handleMenuItemClick(onSkillsClick)}
             >
               <img
-                src="/icons/search.png"
+                src="https://win98icons.alexmeub.com/icons/png/help_book_cool-4.png"
                 alt="Habilidades"
                 width="16"
                 height="16"
@@ -169,7 +169,7 @@ export default function Taskbar({
               onClick={() => handleMenuItemClick(onPortfolioClick)}
             >
               <img
-                src="/icons/world.png"
+                src="https://win98icons.alexmeub.com/icons/png/msn_cool-3.png"
                 alt="Portfólio"
                 width="16"
                 height="16"
@@ -187,7 +187,7 @@ export default function Taskbar({
               }
             >
               <img
-                src="/icons/team.png"
+                src="https://win98icons.alexmeub.com/icons/png/monitor_windows.png"
                 alt="GitHub"
                 width="16"
                 height="16"
@@ -206,7 +206,7 @@ export default function Taskbar({
               }
             >
               <img
-                src="/icons/team.png"
+                src="https://win98icons.alexmeub.com/icons/png/monitor_windows.png"
                 alt="LinkedIn"
                 width="16"
                 height="16"
@@ -222,7 +222,7 @@ export default function Taskbar({
               onClick={() => window.open("/Curriculum 2025 - PT.pdf", "_blank")}
             >
               <img
-                src="/icons/player.png"
+                src="https://win98icons.alexmeub.com/icons/png/notepad_file_gear-2.png"
                 alt="Baixar CV"
                 width="16"
                 height="16"
@@ -236,7 +236,7 @@ export default function Taskbar({
               onClick={() => (window.location.href = "/login")}
             >
               <img
-                src="/icons/camera.png"
+                src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png"
                 alt="Sair"
                 width="16"
                 height="16"

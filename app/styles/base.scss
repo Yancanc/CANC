@@ -38,7 +38,7 @@ body {
   width: 100%;
   height: calc(100vh - 40px); // Subtract taskbar height
   position: relative;
-  overflow: auto;
+  overflow: hidden;
 
   @media (max-width: $mobile) {
     height: calc(100vh - 30px); // Smaller taskbar on mobile

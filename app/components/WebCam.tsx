@@ -357,10 +357,9 @@ export default function WebCam({ onCapture }: WebCamProps) {
   return (
     <div className="webcam-container">
       <div className="webcam-header">
-        <div className="webcam-title">WebCam Win98</div>
         <div className="filter-controls">
           <div className="filter-selector">
-            <label htmlFor="filter-select">Filtro:</label>
+            <label htmlFor="filter-select"> Filtro:</label>
             <select
               id="filter-select"
               className="win98-select"

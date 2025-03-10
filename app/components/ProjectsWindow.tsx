@@ -33,8 +33,8 @@ export default function ProjectsWindow({
       description:
         "Site institucional da concessionária BYD Vitória Motors, com foco em apresentação de veículos, agendamento de test drive e contato com a concessionária.",
       contribution:
-        "Desenvolvimento da primeira versão do site utilizando PHP, seguido pela migração para Next.js. Implementação de um CMS personalizado para gerenciamento de banners e conteúdo. Integração com sistema Followize para processamento de formulários e leads.",
-      technologies: ["Next.js", "TypeScript", "PHP", "Node.js", "MySQL"],
+        "Desenvolvimento da primeira versão do site utilizando PHP. Integração com sistema Followize para processamento de formulários e leads.",
+      technologies: ["TypeScript", "PHP", "Node.js", "MySQL"],
     },
     {
       id: "kuruma",
@@ -44,7 +44,7 @@ export default function ProjectsWindow({
         "Site institucional da concessionária Toyota ES/BH/BSB, com catálogo de veículos, sistema de agendamento e área de ofertas.",
       contribution:
         "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de otimizações que reduziram o tempo de carregamento em 40%. Criação de sistema de gerenciamento de conteúdo para equipe de marketing.",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
     {
       id: "lexusvitoria",
@@ -54,17 +54,7 @@ export default function ProjectsWindow({
         "Site institucional da concessionária Lexus Vitória, com apresentação de veículos de luxo, agendamento de serviços e área de contato.",
       contribution:
         "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de animações e transições para melhorar a experiência do usuário. Integração com APIs para exibição de estoque em tempo real.",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
-    },
-    {
-      id: "azulagro",
-      title: "Azul Agro Máquinas",
-      url: "https://azulagromaquinas.com.br",
-      description:
-        "Site institucional da empresa Azul Agro Máquinas, especializada em equipamentos agrícolas, com catálogo de produtos e sistema de contato.",
-      contribution:
-        "Assistência na criação e desenvolvimento do site, com foco em usabilidade e performance. Implementação de soluções responsivas e otimizadas para diferentes dispositivos.",
-      technologies: ["Next.js", "TypeScript", "Node.js"],
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
     {
       id: "osaka",
@@ -73,8 +63,8 @@ export default function ProjectsWindow({
       description:
         "Site institucional da concessionária Osaka Veículos, com catálogo de veículos, sistema de agendamento e área de ofertas.",
       contribution:
-        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de sistema de busca avançada para veículos e integração com CRM da empresa.",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
+        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de otimizações que reduziram o tempo de carregamento em 40%. Criação de sistema de gerenciamento de conteúdo para equipe de marketing.",
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
     {
       id: "kyoto",
@@ -83,8 +73,8 @@ export default function ProjectsWindow({
       description:
         "Site institucional da concessionária Toyota Kyoto, com apresentação de veículos, agendamento de serviços e área de contato.",
       contribution:
-        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Criação de sistema de gerenciamento de conteúdo para equipe de marketing e integração com APIs de estoque.",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
+        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de otimizações que reduziram o tempo de carregamento em 40%. Criação de sistema de gerenciamento de conteúdo para equipe de marketing.",
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
     {
       id: "lexusbh",
@@ -94,7 +84,7 @@ export default function ProjectsWindow({
         "Site institucional da concessionária Lexus BH, com apresentação de veículos de luxo, agendamento de serviços e área de contato.",
       contribution:
         "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de recursos de acessibilidade e otimização para mecanismos de busca (SEO).",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
     {
       id: "lexusbsb",
@@ -104,7 +94,16 @@ export default function ProjectsWindow({
         "Site institucional da concessionária Lexus Brasília, com apresentação de veículos de luxo, agendamento de serviços e área de contato.",
       contribution:
         "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de sistema de agendamento de test drive e integração com CRM da empresa.",
-      technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB"],
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
+    },
+    {
+      id: "voucher",
+      title: "Agaxtur",
+      url: "https://viajecomaguia.com.brr",
+      description: "Site institucional da empresa Viaje com a Águia.",
+      contribution:
+        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de sistema de agendamento de test drive e integração com CRM da empresa.",
+      technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
     },
   ];
 
