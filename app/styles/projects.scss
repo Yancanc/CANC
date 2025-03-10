@@ -1,0 +1,225 @@
+@import "base";
+
+/* Projects Container Styles */
+.projects-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.projects-header {
+  margin-bottom: 15px;
+
+  h2 {
+    color: $win98-blue;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+}
+
+.projects-note {
+  background-color: #ffffcc;
+  border: 1px solid $win98-border-dark;
+  padding: 8px;
+  margin-bottom: 15px;
+  font-size: 0.8rem;
+  box-shadow: inset 1px 1px 0px $win98-border-light;
+}
+
+.note-text {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  padding: 15px;
+  overflow-y: auto;
+  flex: 1;
+  background-color: white;
+  border: 1px solid $win98-border-dark;
+}
+
+.project-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid transparent;
+  transition: all 0.1s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 128, 0.1);
+    border: 1px dotted $win98-blue;
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 128, 0.3);
+  }
+}
+
+.project-icon {
+  margin-bottom: 8px;
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+}
+
+.project-title {
+  text-align: center;
+  font-size: 0.8rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Project Viewer Styles */
+.project-viewer-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.project-viewer-header {
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.address-bar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid $win98-border-dark;
+  padding: 3px 5px;
+}
+
+.address-label {
+  margin-right: 5px;
+  font-size: 0.8rem;
+}
+
+.address-input {
+  flex: 1;
+  background-color: white;
+  border: 1px solid;
+  border-color: $win98-border-dark $win98-border-light $win98-border-light
+    $win98-border-dark;
+  padding: 2px 5px;
+  font-size: 0.8rem;
+  margin-right: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.go-button {
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+
+.project-viewer-content {
+  flex: 1;
+  border: 1px solid $win98-border-dark;
+  background-color: white;
+}
+
+.project-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Project Details Styles */
+.project-details {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.project-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  h3 {
+    color: $win98-blue;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+.project-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.back-button,
+.visit-button {
+  font-size: 0.8rem;
+  padding: 3px 10px;
+}
+
+.project-details-content {
+  flex: 1;
+}
+
+.detail-section {
+  margin-bottom: 15px;
+
+  .section-title {
+    background-color: $win98-button;
+    padding: 3px 8px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    border: 1px solid;
+    border-color: $win98-border-light $win98-border-dark $win98-border-dark
+      $win98-border-light;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    font-size: 0.9rem;
+  }
+}
+
+.technology-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 5px;
+}
+
+.technology-tag {
+  display: inline-block;
+  background-color: $win98-blue;
+  color: white;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid $win98-border-dark;
+}
+
+.project-url {
+  a {
+    color: $win98-blue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

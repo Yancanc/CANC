@@ -14,6 +14,7 @@ interface TaskbarProps {
   onProjectsClick: () => void;
   onContactClick: () => void;
   onSkillsClick: () => void;
+  onPortfolioClick: () => void;
   openWindows: Window[];
   onWindowRestore: (id: string) => void;
 }
@@ -23,6 +24,7 @@ export default function Taskbar({
   onProjectsClick,
   onContactClick,
   onSkillsClick,
+  onPortfolioClick,
   openWindows,
   onWindowRestore,
 }: TaskbarProps) {
@@ -160,6 +162,20 @@ export default function Taskbar({
                 style={{ marginRight: "8px" }}
               />
               <span>Habilidades</span>
+            </div>
+
+            <div
+              className="menu-item"
+              onClick={() => handleMenuItemClick(onPortfolioClick)}
+            >
+              <img
+                src="/icons/world.png"
+                alt="Portfólio"
+                width="16"
+                height="16"
+                style={{ marginRight: "8px" }}
+              />
+              <span>Portfólio</span>
             </div>
 
             <div className="menu-divider"></div>

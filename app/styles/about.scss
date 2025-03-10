@@ -1,0 +1,98 @@
+@import "base";
+
+/* About Me Styles */
+.about-me-content {
+  font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  h2 {
+    color: $win98-blue;
+  }
+
+  h3 {
+    color: darken($win98-blue, 10%);
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .section {
+    margin-bottom: 15px;
+    border-bottom: 1px solid $win98-border-dark;
+    padding-bottom: 10px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .section-title {
+    background-color: $win98-button;
+    padding: 3px 5px;
+    font-weight: bold;
+    border: 1px solid;
+    border-color: $win98-border-light $win98-border-dark $win98-border-dark
+      $win98-border-light;
+    margin-bottom: 8px;
+  }
+
+  .contact-info {
+    background-color: lighten($win98-window, 5%);
+    padding: 8px;
+    border: 1px solid $win98-border-dark;
+  }
+
+  .experience-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 10px;
+
+    li {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .portfolio-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+
+    @media (max-width: $mobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .portfolio-link {
+    display: block;
+    padding: 5px;
+    background-color: $win98-button;
+    border: 1px solid;
+    border-color: $win98-border-light $win98-border-dark $win98-border-dark
+      $win98-border-light;
+    text-align: center;
+    color: $win98-blue;
+    text-decoration: none;
+    font-size: 0.8rem;
+
+    &:hover {
+      background-color: darken($win98-button, 5%);
+    }
+
+    &:active {
+      border-color: $win98-border-dark $win98-border-light $win98-border-light
+        $win98-border-dark;
+    }
+  }
+
+  .text-blue {
+    color: $win98-blue;
+  }
+
+  .mt-4 {
+    margin-top: 1rem;
+  }
+}

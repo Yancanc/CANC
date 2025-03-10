@@ -1,4 +1,4 @@
-import "./styles/windows98.scss";
+import "./styles/main.scss";
 import "./styles/login.scss";
 import "./styles/loading.scss";
 import type { Metadata } from "next";

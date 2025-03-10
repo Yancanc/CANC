@@ -1,0 +1,196 @@
+@import "base";
+
+/* Contact Window Styles */
+.contact-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.contact-header {
+  margin-bottom: 20px;
+
+  h2 {
+    color: $win98-blue;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid $win98-border-dark;
+
+  .method-icon {
+    margin-right: 15px;
+
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+  }
+
+  .method-details {
+    flex: 1;
+
+    .method-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: $win98-blue;
+    }
+
+    .method-value {
+      font-size: 0.9rem;
+
+      a {
+        color: $win98-blue;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.contact-form {
+  background-color: white;
+  border: 1px solid $win98-border-dark;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.form-title {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: $win98-blue;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $win98-border-dark;
+}
+
+.form-group {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid;
+    border-color: $win98-border-dark $win98-border-light $win98-border-light
+      $win98-border-dark;
+    background-color: white;
+    font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      border-color: $win98-blue;
+    }
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  button {
+    min-width: 80px;
+  }
+}
+
+.form-status {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid;
+  font-size: 0.9rem;
+
+  &.success {
+    background-color: #e8ffe8;
+    border-color: #008000;
+    color: #008000;
+  }
+
+  &.error {
+    background-color: #ffe8e8;
+    border-color: #800000;
+    color: #800000;
+  }
+}
+
+.social-links {
+  margin-top: 20px;
+
+  h3 {
+    color: $win98-blue;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .social-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .social-button {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: $win98-button;
+    border: 1px solid;
+    border-color: $win98-border-light $win98-border-dark $win98-border-dark
+      $win98-border-light;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+
+    &:hover {
+      background-color: darken($win98-button, 5%);
+    }
+
+    &:active {
+      border-color: $win98-border-dark $win98-border-light $win98-border-light
+        $win98-border-dark;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    span {
+      font-size: 0.8rem;
+    }
+  }
+}

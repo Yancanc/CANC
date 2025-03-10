@@ -7,6 +7,7 @@ import AboutWindow from "./AboutWindow";
 import ContactWindow from "./ContactWindow";
 import PortfolioWindow from "./PortfolioWindow";
 import ProjectsWindow from "./ProjectsWindow";
+import SkillsWindow from "./SkillsWindow";
 import Taskbar from "./Taskbar";
 import WebCam from "./WebCam";
 import SnakeGame from "./SnakeGame";
@@ -251,6 +252,18 @@ export default function Desktop() {
             onClick={() => handleOpenWindow("skills")}
           />
           <DesktopIcon
+            name="Portfólio"
+            svgIcon={
+              <img
+                src="/icons/world.png"
+                alt="Portfólio"
+                width="32"
+                height="32"
+              />
+            }
+            onClick={() => handleOpenWindow("portfolio")}
+          />
+          <DesktopIcon
             name="WebCam"
             svgIcon={
               <img
@@ -315,69 +328,11 @@ export default function Desktop() {
           initialPosition={getInitialPosition("skills")}
           initialSize={getInitialSize("skills")}
         >
-          <div className="skills-content">
-            <div className="skill-category">
-              <h3>Linguagens de Programação</h3>
-              <div className="skill-tags">
-                <span className="skill-tag">JavaScript</span>
-                <span className="skill-tag">TypeScript</span>
-                <span className="skill-tag">Python</span>
-                <span className="skill-tag">Java</span>
-                <span className="skill-tag">C#</span>
-                <span className="skill-tag">PHP</span>
-              </div>
-            </div>
-
-            <div className="skill-category">
-              <h3>Frameworks e Bibliotecas</h3>
-              <div className="skill-tags">
-                <span className="skill-tag">React</span>
-                <span className="skill-tag">Next.js</span>
-                <span className="skill-tag">Node.js</span>
-                <span className="skill-tag">Express</span>
-                <span className="skill-tag">Django</span>
-                <span className="skill-tag">Flask</span>
-                <span className="skill-tag">Angular</span>
-                <span className="skill-tag">Vue.js</span>
-              </div>
-            </div>
-
-            <div className="skill-category">
-              <h3>Banco de Dados</h3>
-              <div className="skill-tags">
-                <span className="skill-tag">MySQL</span>
-                <span className="skill-tag">PostgreSQL</span>
-                <span className="skill-tag">MongoDB</span>
-                <span className="skill-tag">SQLite</span>
-                <span className="skill-tag">Redis</span>
-              </div>
-            </div>
-
-            <div className="skill-category">
-              <h3>DevOps & Ferramentas</h3>
-              <div className="skill-tags">
-                <span className="skill-tag">Git</span>
-                <span className="skill-tag">Docker</span>
-                <span className="skill-tag">AWS</span>
-                <span className="skill-tag">Azure</span>
-                <span className="skill-tag">CI/CD</span>
-                <span className="skill-tag">Linux</span>
-                <span className="skill-tag">Nginx</span>
-              </div>
-            </div>
-
-            <div className="skill-category">
-              <h3>Design & Frontend</h3>
-              <div className="skill-tags">
-                <span className="skill-tag">HTML5</span>
-                <span className="skill-tag">CSS3</span>
-                <span className="skill-tag">SASS/SCSS</span>
-                <span className="skill-tag">Tailwind CSS</span>
-                <span className="skill-tag">Bootstrap</span>
-                <span className="skill-tag">Responsive Design</span>
-              </div>
-            </div>
-          </div>
+          <SkillsWindow
+            onClose={() => handleCloseWindow("skills")}
+            onMinimize={() => handleMinimizeWindow("skills")}
+            isMinimized={minimizedWindows.includes("skills")}
+          />
         </Win98Window>
       )}
 
@@ -387,6 +342,20 @@ export default function Desktop() {
           onMinimize={() => handleMinimizeWindow("projects")}
           isMinimized={minimizedWindows.includes("projects")}
         />
+      )}
+
+      {openWindows.some((w) => w.id === "portfolio") && (
+        <Win98Window
+          id="portfolio"
+          title="Portfólio"
+          onClose={() => handleCloseWindow("portfolio")}
+          onMinimize={() => handleMinimizeWindow("portfolio")}
+          isMinimized={minimizedWindows.includes("portfolio")}
+          initialPosition={getInitialPosition("portfolio")}
+          initialSize={getInitialSize("portfolio")}
+        >
+          <PortfolioWindow />
+        </Win98Window>
       )}
 
       {showWebCam && (
@@ -423,6 +392,7 @@ export default function Desktop() {
         onProjectsClick={() => handleOpenWindow("projects")}
         onContactClick={() => handleOpenWindow("contact")}
         onSkillsClick={() => handleOpenWindow("skills")}
+        onPortfolioClick={() => handleOpenWindow("portfolio")}
         onWindowRestore={handleRestoreWindow}
       />
     </div>

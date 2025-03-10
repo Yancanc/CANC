@@ -1,0 +1,246 @@
+@import "base";
+
+/* Windows 98 Taskbar */
+.win98-taskbar {
+  background-color: $win98-button;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 50;
+  border-top: 2px solid $win98-border-light;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  justify-content: space-between;
+  animation: slideUp 0.3s ease-out;
+
+  @media (max-width: $mobile) {
+    height: 30px;
+    padding: 0 1px;
+  }
+}
+
+/* Start Button */
+.win98-start-button {
+  height: 36px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $win98-border-light $win98-border-dark $win98-border-dark
+    $win98-border-light;
+  margin-right: 6px;
+  font-weight: bold;
+  background-color: $win98-button;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+
+  @media (max-width: $mobile) {
+    height: 26px;
+    padding: 0 5px;
+    margin-right: 4px;
+    font-size: 0.8rem;
+  }
+
+  &:hover {
+    background-color: darken($win98-button, 5%);
+  }
+
+  img {
+    margin-right: 4px;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+
+    @media (max-width: $mobile) {
+      width: 16px;
+      height: 16px;
+      margin-right: 3px;
+    }
+  }
+}
+
+/* Taskbar Divider */
+.taskbar-divider {
+  width: 1px;
+  height: 70%;
+  background-color: $win98-border-dark;
+  margin: 0 4px;
+
+  @media (max-width: $mobile) {
+    margin: 0 2px;
+  }
+}
+
+/* Taskbar Time */
+.taskbar-time {
+  background-color: $win98-button;
+  border-width: 1px;
+  border-style: solid;
+  border-color: $win98-border-dark $win98-border-light $win98-border-light
+    $win98-border-dark;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  margin-left: auto;
+
+  @media (max-width: $mobile) {
+    padding: 1px 5px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Start Menu */
+.start-menu {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 200px;
+  background-color: $win98-button;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $win98-border-light $win98-border-dark $win98-border-dark
+    $win98-border-light;
+  display: none;
+  z-index: 100;
+
+  @media (max-width: $mobile) {
+    bottom: 30px;
+    width: 180px;
+  }
+
+  &.active {
+    display: block;
+    animation: startMenuOpen 0.2s ease-out;
+  }
+
+  .start-menu-header {
+    background-color: $win98-blue;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+    height: 100%;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+
+    @media (max-width: $mobile) {
+      width: 18px;
+      padding: 3px;
+      font-size: 0.8rem;
+    }
+  }
+
+  .start-menu-items {
+    margin-left: 30px;
+    padding: 5px 0;
+
+    @media (max-width: $mobile) {
+      margin-left: 25px;
+      padding: 3px 0;
+    }
+
+    .menu-item {
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+
+      @media (max-width: $mobile) {
+        padding: 3px 6px;
+        font-size: 0.8rem;
+      }
+
+      &:hover {
+        background-color: $win98-blue;
+        color: white;
+      }
+
+      img,
+      svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        object-fit: contain;
+
+        @media (max-width: $mobile) {
+          width: 14px;
+          height: 14px;
+          margin-right: 6px;
+        }
+      }
+    }
+
+    .menu-divider {
+      height: 1px;
+      background-color: $win98-border-dark;
+      margin: 5px 0;
+      border-bottom: 1px solid $win98-border-light;
+    }
+  }
+}
+
+/* Taskbar Windows */
+.taskbar-windows {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  margin: 0 4px;
+  overflow-x: auto;
+  max-width: calc(100% - 200px);
+
+  @media (max-width: $mobile) {
+    max-width: calc(100% - 150px);
+    margin: 0 2px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 0;
+    width: 0;
+  }
+}
+
+.taskbar-window-button {
+  height: 32px;
+  min-width: 120px;
+  max-width: 150px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $win98-border-light $win98-border-dark $win98-border-dark
+    $win98-border-light;
+  font-size: 0.8rem;
+  background-color: $win98-button;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: $mobile) {
+    height: 26px;
+    min-width: 100px;
+    font-size: 0.7rem;
+    padding: 0 5px;
+  }
+
+  &:hover {
+    background-color: darken($win98-button, 5%);
+  }
+
+  &.active {
+    border-color: $win98-border-dark $win98-border-light $win98-border-light
+      $win98-border-dark;
+    background-color: darken($win98-button, 10%);
+  }
+}
