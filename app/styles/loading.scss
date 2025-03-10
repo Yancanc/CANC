@@ -1,0 +1,150 @@
+/* Windows 98 Loading Screen */
+.xp-loading-screen {
+  width: 100%;
+  height: 100vh;
+  background-color: #000080; /* Azul do Windows 98 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Breakpoints para responsividade */
+$mobile: 480px;
+$tablet: 768px;
+
+.xp-loading-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+
+  @media (max-width: $mobile) {
+    margin-bottom: 30px;
+    flex-direction: column;
+  }
+
+  .logo-text {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 20px;
+
+    @media (max-width: $mobile) {
+      font-size: 1.5rem;
+      margin-left: 0;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    span {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: normal;
+      margin-top: 5px;
+
+      @media (max-width: $mobile) {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .logo-image {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: $mobile) {
+      width: 50px;
+      height: 50px;
+    }
+
+    &::before {
+      content: "";
+      width: 60px;
+      height: 30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 31 14'%3E%3Cpath fill='%23FFFFFF' d='M0.751,0.218h6.579v6.563H0.751V0.218z M8.504,0.218h6.579v6.563H8.504V0.218z M0.751,7.968h6.579v6.563H0.751V7.968z M8.504,7.968h6.579v6.563H8.504V7.968z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      @media (max-width: $mobile) {
+        width: 50px;
+        height: 25px;
+      }
+    }
+  }
+}
+
+.xp-loading-bar-container {
+  width: 300px;
+  height: 20px;
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  padding: 2px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+
+  @media (max-width: $tablet) {
+    width: 80%;
+    max-width: 300px;
+  }
+
+  @media (max-width: $mobile) {
+    width: 90%;
+    height: 16px;
+  }
+}
+
+.xp-loading-bar {
+  height: 100%;
+  width: 30%;
+  background-color: #000080;
+  position: relative;
+  animation: win98-loading 1.5s infinite;
+}
+
+.xp-loading-text {
+  font-size: 0.9rem;
+  color: #ffffff;
+  text-align: center;
+
+  @media (max-width: $mobile) {
+    font-size: 0.8rem;
+    width: 90%;
+  }
+
+  p {
+    margin: 5px 0;
+  }
+}
+
+.xp-loading-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+
+  @media (max-width: $mobile) {
+    font-size: 0.7rem;
+    bottom: 10px;
+  }
+}
+
+@keyframes win98-loading {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 100%;
+  }
+}

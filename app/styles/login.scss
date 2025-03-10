@@ -1,0 +1,373 @@
+/* Windows 98 Login Variables */
+$win98-bg: #008080; // Teal background
+$win98-window: #c0c0c0; // Window background
+$win98-border-light: #ffffff; // Light border
+$win98-border-dark: #808080; // Dark border
+$win98-border-darker: #000000; // Darkest border
+$win98-button: #c0c0c0; // Button background
+$win98-blue: #000080; // Windows 98 blue (taskbar, etc)
+$win98-text: #000000; // Default text color
+
+/* Breakpoints para responsividade */
+$mobile: 480px;
+$tablet: 768px;
+
+.login-screen {
+  width: 100%;
+  height: 100vh;
+  background-color: $win98-bg;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.login-logo {
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+
+  h1 {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: $mobile) {
+      font-size: 1.5rem;
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      margin-right: 15px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 31 14'%3E%3Cpath fill='%23FFFFFF' d='M0.751,0.218h6.579v6.563H0.751V0.218z M8.504,0.218h6.579v6.563H8.504V0.218z M0.751,7.968h6.579v6.563H0.751V7.968z M8.504,7.968h6.579v6.563H8.504V7.968z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      @media (max-width: $mobile) {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+
+  p {
+    color: white;
+    font-size: 0.9rem;
+
+    @media (max-width: $mobile) {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.login-window {
+  background-color: $win98-window;
+  width: 400px;
+  padding: 3px;
+  position: relative;
+  z-index: 2;
+  border: 2px solid;
+  border-color: $win98-border-light $win98-border-dark $win98-border-dark
+    $win98-border-light;
+  box-shadow: 1px 1px 0 $win98-border-darker;
+
+  @media (max-width: $tablet) {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  @media (max-width: $mobile) {
+    width: 95%;
+  }
+
+  .login-title-bar {
+    background-color: $win98-blue;
+    color: white;
+    padding: 3px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .title {
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 2px;
+
+      button {
+        width: 16px;
+        height: 14px;
+        background-color: $win98-button;
+        border-width: 1px;
+        border-style: solid;
+        border-color: $win98-border-light $win98-border-dark $win98-border-dark
+          $win98-border-light;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        padding: 0;
+        cursor: pointer;
+
+        &:active {
+          border-color: $win98-border-dark $win98-border-light
+            $win98-border-light $win98-border-dark;
+        }
+      }
+    }
+  }
+
+  .login-content {
+    padding: 10px;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 20px;
+
+    h2 {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+
+      @media (max-width: $mobile) {
+        font-size: 0.9rem;
+      }
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: #333;
+
+      @media (max-width: $mobile) {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .login-users {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+
+    @media (max-width: $mobile) {
+      gap: 15px;
+    }
+
+    .user-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid transparent;
+
+      &:hover {
+        border: 1px dotted #000;
+      }
+
+      &.selected {
+        background-color: #000080;
+        color: white;
+        border: 1px dotted #fff;
+      }
+
+      .user-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 5px;
+        background-color: #fff;
+        border: 2px solid;
+        border-color: $win98-border-dark $win98-border-light $win98-border-light
+          $win98-border-dark;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.admin {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='10' r='6' fill='%23000000'/%3E%3Cpath d='M16 18 C10 18 5 23 5 30 L27 30 C27 23 22 18 16 18Z' fill='%23000000'/%3E%3C/svg%3E");
+          background-size: 80%;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        &.guest {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='10' r='6' fill='%23000000'/%3E%3Cpath d='M16 18 C10 18 5 23 5 30 L27 30 C27 23 22 18 16 18Z' fill='%23000000'/%3E%3C/svg%3E");
+          background-size: 80%;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+      }
+
+      .user-name {
+        font-size: 0.8rem;
+
+        @media (max-width: $mobile) {
+          font-size: 0.7rem;
+        }
+      }
+    }
+  }
+
+  .password-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid;
+    border-color: $win98-border-dark $win98-border-light $win98-border-light
+      $win98-border-dark;
+    background-color: $win98-window;
+
+    @media (max-width: $mobile) {
+      padding: 8px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.8rem;
+
+      @media (max-width: $mobile) {
+        font-size: 0.75rem;
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 3px;
+      border: 2px solid;
+      border-color: $win98-border-dark $win98-border-light $win98-border-light
+        $win98-border-dark;
+      font-size: 0.8rem;
+      background-color: white;
+
+      &:focus {
+        outline: 1px dotted #000;
+      }
+    }
+
+    .error-message {
+      color: #ff0000;
+      font-size: 0.8rem;
+      margin-top: 5px;
+
+      @media (max-width: $mobile) {
+        font-size: 0.7rem;
+      }
+    }
+  }
+
+  .login-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-top: 10px;
+
+    .win98-button {
+      background-color: $win98-button;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border: 2px solid;
+      border-color: $win98-border-light $win98-border-dark $win98-border-dark
+        $win98-border-light;
+      cursor: pointer;
+
+      @media (max-width: $mobile) {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+      }
+
+      &:active {
+        border-color: $win98-border-dark $win98-border-light $win98-border-light
+          $win98-border-dark;
+      }
+
+      &:focus {
+        outline: 1px dotted #000;
+      }
+
+      &:disabled {
+        color: $win98-border-dark;
+        text-shadow: 1px 1px 0 $win98-border-light;
+      }
+    }
+  }
+}
+
+.login-footer {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  font-size: 0.7rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  @media (max-width: $mobile) {
+    font-size: 0.6rem;
+    bottom: 5px;
+  }
+}
+
+/* Animação de entrada no desktop */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-in-out;
+}
+
+/* Animação de saída */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s forwards;
+}
