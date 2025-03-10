@@ -119,7 +119,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Currículo</span>
+              <span>Sobre Mim</span>
             </div>
 
             <div

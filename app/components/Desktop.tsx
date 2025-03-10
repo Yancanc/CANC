@@ -24,7 +24,9 @@ export default function Desktop() {
     width: 1024,
     height: 768,
   });
-  const [openWindows, setOpenWindows] = useState<Window[]>([]);
+  const [openWindows, setOpenWindows] = useState<Window[]>([
+    { id: "about", title: "Sobre Mim", isMinimized: false },
+  ]);
   const [minimizedWindows, setMinimizedWindows] = useState<string[]>([]);
   const [showWebCam, setShowWebCam] = useState(false);
   const [showSnakeGame, setShowSnakeGame] = useState(false);
@@ -45,6 +47,16 @@ export default function Desktop() {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Abrir About Me automaticamente ao montar o componente
+  useEffect(() => {
+    // Pequeno atraso para garantir que o componente esteja completamente montado
+    const timer = setTimeout(() => {
+      handleOpenWindow("about");
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const getInitialPosition = (
@@ -204,7 +216,7 @@ export default function Desktop() {
       <div className="win98-desktop">
         <div className="desktop-icons-container">
           <DesktopIcon
-            name="Currículo"
+            name="Sobre Mim"
             svgIcon={
               <img
                 src="https://win98icons.alexmeub.com/icons/png/computer-4.png"
