@@ -1,14 +1,20 @@
 @import "base";
 
+/* Portfolio Container Styles */
+.portfolio-container {
+  height: 100%;
+  overflow-y: auto;
+  background-color: $win98-window;
+  box-sizing: border-box;
+}
+
 /* Portfolio Content Styles */
 .portfolio-content {
   font-family: "MS Sans Serif", "Tahoma", "Arial", sans-serif;
-  overflow-y: auto;
   padding: 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
   -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos iOS */
   box-sizing: border-box;
 }

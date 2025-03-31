@@ -12,6 +12,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
   const [loading, setLoading] = useState(false);
   const [startTransition, setStartTransition] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showAdminPopup, setShowAdminPopup] = useState(false);
 
   // Atualizar o relógio a cada minuto
   useEffect(() => {
@@ -23,6 +24,10 @@ function Login({ onLogin }: { onLogin: () => void }) {
   }, []);
 
   const handleUserSelect = (user: string) => {
+    if (user === "admin") {
+      setShowAdminPopup(true);
+      return;
+    }
     setSelectedUser(user);
     setError("");
   };
@@ -67,6 +72,39 @@ function Login({ onLogin }: { onLogin: () => void }) {
 
   return (
     <div className={`login-screen ${startTransition ? "fade-out" : ""}`}>
+      {showAdminPopup && (
+        <div className="win98-popup-overlay">
+          <div className="win98-popup">
+            <div className="win98-popup-title-bar">
+              <div className="title">Aviso</div>
+              <div className="controls">
+                <button
+                  onClick={() => setShowAdminPopup(false)}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div className="win98-popup-content">
+              <div className="win98-popup-icon">⚠️</div>
+              <div className="win98-popup-message">
+                Você com certeza não é o Admin!<br></br>
+                Clique no CANC para continuar.
+              </div>
+              <div className="win98-popup-buttons">
+                <button
+                  className="win98-button"
+                  onClick={() => setShowAdminPopup(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="login-logo">
         <h1>Yandows 98</h1>
         <p>Microloft® Yandows 98</p>
@@ -146,6 +184,83 @@ function Login({ onLogin }: { onLogin: () => void }) {
         <div>{formattedDate}</div>
         <div>{formattedTime}</div>
       </div>
+
+      <style jsx>{`
+        .fade-out {
+          animation: fadeOut 2s forwards;
+        }
+
+        @keyframes fadeOut {
+          from {
+            opacity: 1;
+          }
+          to {
+            opacity: 0;
+          }
+        }
+
+        .win98-popup-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+
+        .win98-popup {
+          background-color: #c0c0c0;
+          border: 2px solid #000;
+          box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+          min-width: 300px;
+          max-width: 400px;
+        }
+
+        .win98-popup-title-bar {
+          background-color: #000080;
+          color: white;
+          padding: 2px 4px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .win98-popup-title-bar .controls button {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 16px;
+          cursor: pointer;
+          padding: 0 4px;
+        }
+
+        .win98-popup-content {
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .win98-popup-icon {
+          font-size: 32px;
+        }
+
+        .win98-popup-message {
+          text-align: center;
+          font-size: 14px;
+        }
+
+        .win98-popup-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+        }
+      `}</style>
     </div>
   );
 }

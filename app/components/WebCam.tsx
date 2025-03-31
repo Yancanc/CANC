@@ -381,7 +381,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
               onClick={toggleCamera}
               title="Alternar câmera"
             >
-              🔄
+              Iniciar / Trocar Camera
             </button>
           )}
         </div>
@@ -511,13 +511,13 @@ export default function WebCam({ onCapture }: WebCamProps) {
         }
 
         .camera-toggle-button {
-          width: 30px;
+          font-size: 10px;
+          width: 90px;
           height: 30px;
           padding: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 16px;
         }
 
         .webcam-content {
