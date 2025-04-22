@@ -129,7 +129,7 @@ export default function Taskbar({
             height="20"
             style={{ marginRight: "4px" }}
           />
-          <span>Start</span>
+          <span>Menu</span>
         </button>
 
         <div className="taskbar-divider"></div>
@@ -268,7 +268,7 @@ export default function Taskbar({
             <div
               className="menu-item"
               onClick={() =>
-                window.open("https://github.com/yancancella", "_blank")
+                window.open("https://github.com/Yancanc", "_blank")
               }
             >
               <img

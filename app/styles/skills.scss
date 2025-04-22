@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: $win98-window;
   box-sizing: border-box;
 }

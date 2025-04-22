@@ -8,6 +8,8 @@ import ContactWindow from "./ContactWindow";
 import PortfolioWindow from "./PortfolioWindow";
 import ProjectsWindow from "./ProjectsWindow";
 import SkillsWindow from "./SkillsWindow";
+import ExperienceWindow from "./ExperienceWindow";
+import TutorialPopup from "./TutorialPopup";
 import Taskbar from "./Taskbar";
 import WebCam from "./WebCam";
 import SnakeGame from "./SnakeGame";
@@ -30,6 +32,7 @@ export default function Desktop() {
   const [minimizedWindows, setMinimizedWindows] = useState<string[]>([]);
   const [showWebCam, setShowWebCam] = useState(false);
   const [showSnakeGame, setShowSnakeGame] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
     // Update window dimensions on client side
@@ -47,6 +50,19 @@ export default function Desktop() {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Verificar se deve mostrar o tutorial ou não
+  useEffect(() => {
+    // Pequeno atraso para garantir que o localStorage esteja disponível
+    const timer = setTimeout(() => {
+      const dontShowTutorial = localStorage.getItem("dontShowTutorial");
+      if (dontShowTutorial !== "true") {
+        setShowTutorial(true);
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Abrir About Me automaticamente ao montar o componente
@@ -74,6 +90,7 @@ export default function Desktop() {
       projects: { x: 300, y: 150 },
       webcam: { x: 350, y: 150 },
       "snake-game": { x: 400, y: 200 },
+      experience: { x: 175, y: 125 },
     };
 
     // Para coordenadas numéricas
@@ -113,6 +130,7 @@ export default function Desktop() {
       projects: { width: defaultWidth, height: defaultHeight },
       webcam: { width: 500, height: 450 },
       "snake-game": { width: 450, height: 500 },
+      experience: { width: defaultWidth, height: defaultHeight },
     };
 
     return sizes[windowName] || { width: defaultWidth, height: defaultHeight };
@@ -136,6 +154,7 @@ export default function Desktop() {
       skills: "Habilidades",
       portfolio: "Portfólio",
       projects: "Projetos",
+      experience: "Experiência",
     };
 
     // Em dispositivos móveis, fechar outras janelas ao abrir uma nova
@@ -368,6 +387,19 @@ export default function Desktop() {
               onClick={toggleSnakeGame}
             />
           )}
+
+          <DesktopIcon
+            name="Experiência"
+            svgIcon={
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/briefcase-3.png"
+                alt="Experiência"
+                width="32"
+                height="32"
+              />
+            }
+            onClick={() => handleOpenWindow("experience")}
+          />
         </div>
       </div>
 
@@ -478,6 +510,27 @@ export default function Desktop() {
           <SnakeGame />
         </Win98Window>
       )}
+
+      {openWindows.some((w) => w.id === "experience") && (
+        <Win98Window
+          id="experience"
+          title="Experiência Profissional"
+          onClose={() => handleCloseWindow("experience")}
+          onMinimize={() => handleMinimizeWindow("experience")}
+          isMinimized={minimizedWindows.includes("experience")}
+          initialPosition={getInitialPosition("experience")}
+          initialSize={getInitialSize("experience")}
+        >
+          <ExperienceWindow
+            onClose={() => handleCloseWindow("experience")}
+            onMinimize={() => handleMinimizeWindow("experience")}
+            isMinimized={minimizedWindows.includes("experience")}
+          />
+        </Win98Window>
+      )}
+
+      {/* Tutorial Popup */}
+      {showTutorial && <TutorialPopup onClose={() => setShowTutorial(false)} />}
 
       <Taskbar
         openWindows={openWindows}

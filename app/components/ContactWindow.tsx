@@ -48,12 +48,12 @@ const ContactWindow: React.FC = () => {
                 <strong>GitHub:</strong>
                 <p>
                   <a
-                    href="https://github.com/yancancella"
+                    href="https://github.com/Yancanc"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue"
                   >
-                    github.com/yancancella
+                    github.com/Yancanc
                   </a>
                 </p>
               </div>
