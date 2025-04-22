@@ -284,10 +284,7 @@ export default function Taskbar({
             <div
               className="menu-item"
               onClick={() =>
-                window.open(
-                  "https://www.linkedin.com/in/yan-rodrigues-3b4a5a1b8/",
-                  "_blank"
-                )
+                window.open("https://www.linkedin.com/in/yancanc/", "_blank")
               }
             >
               <img
