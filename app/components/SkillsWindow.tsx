@@ -56,6 +56,7 @@ export default function SkillsWindow({
           <div className="skills-list">
             <div className="skill-item">Node.js</div>
             <div className="skill-item">Express</div>
+            <div className="skill-item">Laravel</div>
             <div className="skill-item">MySQL</div>
             <div className="skill-item">PostgreSQL</div>
             <div className="skill-item">MongoDB</div>

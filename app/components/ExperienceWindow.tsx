@@ -27,8 +27,37 @@ export default function ExperienceWindow({
         <div className="experience-item">
           <div className="experience-title">
             <h3>Desenvolvedor Full Stack Pleno</h3>
+            <span className="company">Live! - Empresa Têxtil</span>
+            <span className="period">Junho de 2024 – Atual</span>
+          </div>
+          <div className="experience-details">
+            <ul className="experience-list">
+              <li>
+                Desenvolvimento e manutenção de sistemas para empresa têxtil de
+                Santa Catarina utilizando MongoDB, PostgreSQL, PHP, Laravel,
+                Node.js, JavaScript e Next.js.
+              </li>
+              <li>
+                Criação de painéis de CRM personalizados para gestão de clientes
+                e processos internos.
+              </li>
+              <li>Manutenção e evolução dos sites e sistemas da empresa.</li>
+              <li>
+                Implementação de soluções escaláveis para gestão de produção
+                têxtil.
+              </li>
+              <li>
+                Desenvolvimento de APIs para integração entre sistemas internos.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="experience-item">
+          <div className="experience-title">
+            <h3>Desenvolvedor Full Stack Pleno</h3>
             <span className="company">Grupo Águia Branca</span>
-            <span className="period">Julho de 2023 – Março de 2025</span>
+            <span className="period">Julho de 2023 – Maio de 2024</span>
           </div>
           <div className="experience-details">
             <ul className="experience-list">

@@ -43,31 +43,23 @@ const AboutWindow: React.FC = () => {
       <div className="section">
         <div className="section-title">Ultima Experiência</div>
         <p>
-          <strong>Desenvolvedor Full Stack Pleno</strong> - Grupo Águia Branca
+          <strong>Desenvolvedor Full Stack Pleno</strong> - Live! - Empresa
+          Têxtil
         </p>
         <p>
-          <em>Julho de 2023 – Março de 2025</em>
+          <em>Junho de 2024 – Atual</em>
         </p>
         <ul className="experience-list">
           <li>
-            Desenvolvimento e manutenção de APIs e websites utilizando
-            TypeScript, PHP, Node.js e Next.js
+            Desenvolvimento e manutenção de sistemas utilizando MongoDB,
+            PostgreSQL, PHP, Laravel, Node.js, JavaScript e Next.js
           </li>
           <li>
-            Líder no desenvolvimento e manutenção do site Lexus ES/BH/BSB e do
-            site Toyota ES/BH/BSB
+            Criação de painéis de CRM personalizados para gestão de clientes
           </li>
+          <li>Manutenção e evolução dos sites e sistemas da empresa</li>
           <li>
-            Criação e liderança de um CMS integrado para gerenciamento de
-            banners
-          </li>
-          <li>
-            Desenvolvimento de API robusta com sistema de autenticação seguro e
-            integração com Followize
-          </li>
-          <li>
-            Implementação de scripts em Python para otimização de imagens e
-            validação de dados
+            Implementação de soluções escaláveis para gestão de produção têxtil
           </li>
         </ul>
       </div>

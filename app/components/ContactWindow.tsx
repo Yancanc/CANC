@@ -39,7 +39,7 @@ const ContactWindow: React.FC = () => {
             <div className="contact-item">
               <div className="contact-text">
                 <strong>Localização:</strong>
-                <p>Vitória, Espírito Santo - Brasil</p>
+                <p>Curitiba, Paraná - Brasil</p>
               </div>
             </div>
 
