@@ -1,0 +1,12 @@
+{
+  "name": "Yandows 98 Portfolio",
+  "short_name": "Yandows 98",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#008080",
+  "theme_color": "#008080",
+  "icons": [
+    { "src": "/icons/world.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/computer.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

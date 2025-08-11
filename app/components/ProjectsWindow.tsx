@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "../context/Locale";
 
 interface ProjectsWindowProps {
   onClose: () => void;
@@ -15,6 +16,8 @@ interface Project {
   description: string;
   contribution: string;
   technologies: string[];
+  challenges?: string[];
+  solutions?: string[];
 }
 
 export default function ProjectsWindow({
@@ -23,6 +26,7 @@ export default function ProjectsWindow({
   isMinimized,
 }: ProjectsWindowProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { t } = useLocale();
 
   const projects: Project[] = [
     {
@@ -42,8 +46,16 @@ export default function ProjectsWindow({
       description:
         "Site institucional da concessionária Toyota ES/BH/BSB, com catálogo de veículos, sistema de agendamento e área de ofertas.",
       contribution:
-        "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de otimizações que reduziram o tempo de carregamento em 40%. Criação de sistema de gerenciamento de conteúdo para equipe de marketing.",
+        "Desenvolvimento completo em Next.js/TypeScript, criação de CMS de banners e otimizações de front-end e imagens.",
       technologies: ["Next.js", "TypeScript", "Node.js", "SQL Server"],
+      challenges: [
+        "Tempo de publicação de banners e destaques era lento e manual",
+        "Necessidade de padronizar imagens e reduzir tamanho sem perder qualidade",
+      ],
+      solutions: [
+        "CMS de banners com fluxo simples para o time de marketing",
+        "Pipeline de otimização de imagens (conversão e dimensionamento)",
+      ],
     },
     {
       id: "lexusvitoria",
@@ -98,7 +110,7 @@ export default function ProjectsWindow({
     {
       id: "voucher",
       title: "Agaxtur",
-      url: "https://viajecomaguia.com.brr",
+      url: "https://viajecomaguia.com.br",
       description: "Site institucional da empresa Viaje com a Águia.",
       contribution:
         "Desenvolvimento completo do site utilizando Next.js e TypeScript. Implementação de sistema de agendamento de test drive e integração com CRM da empresa.",
@@ -119,7 +131,10 @@ export default function ProjectsWindow({
       {!selectedProject ? (
         <>
           <div className="projects-header">
-            <p className="mb-2">Selecione um projeto para ver detalhes:</p>
+            <p className="mb-2">{t("projects.selectPrompt")}</p>
+            <div className="projects-note">
+              <p className="note-text">{t("projects.tip")}</p>
+            </div>
           </div>
           <div className="projects-grid">
             {projects.map((project) => (
@@ -159,27 +174,55 @@ export default function ProjectsWindow({
                 className="win98-button back-button"
                 onClick={() => setSelectedProject(null)}
               >
-                Voltar
+                {t("projects.back")}
               </button>
               <button
                 className="win98-button visit-button"
                 onClick={() => handleVisitSite(selectedProject.url)}
               >
-                Visitar Site
+                {t("projects.visit")}
               </button>
             </div>
           </div>
           <div className="project-details-content">
             <div className="detail-section">
-              <div className="section-title">Descrição</div>
-              <p>{selectedProject.description}</p>
+              <div className="section-title">{t("projects.results")}</div>
+              <p>{t("projects.noMetrics")}</p>
             </div>
             <div className="detail-section">
-              <div className="section-title">Minha Contribuição</div>
+              <div className="section-title">{t("projects.description")}</div>
+              <p>{selectedProject.description}</p>
+            </div>
+            {selectedProject.challenges &&
+              selectedProject.challenges.length > 0 && (
+                <div className="detail-section">
+                  <div className="section-title">
+                    {t("projects.challenges")}
+                  </div>
+                  <ul>
+                    {selectedProject.challenges.map((c, i) => (
+                      <li key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            {selectedProject.solutions &&
+              selectedProject.solutions.length > 0 && (
+                <div className="detail-section">
+                  <div className="section-title">{t("projects.solutions")}</div>
+                  <ul>
+                    {selectedProject.solutions.map((s, i) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            <div className="detail-section">
+              <div className="section-title">{t("projects.contribution")}</div>
               <p>{selectedProject.contribution}</p>
             </div>
             <div className="detail-section">
-              <div className="section-title">Tecnologias Utilizadas</div>
+              <div className="section-title">{t("projects.tech")}</div>
               <div className="technology-tags">
                 {selectedProject.technologies.map((tech, index) => (
                   <span key={index} className="technology-tag">
@@ -189,7 +232,7 @@ export default function ProjectsWindow({
               </div>
             </div>
             <div className="detail-section">
-              <div className="section-title">URL</div>
+              <div className="section-title">{t("projects.url")}</div>
               <p className="project-url">
                 <a
                   href={selectedProject.url}

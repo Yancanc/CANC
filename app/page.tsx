@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Desktop from "./components/Desktop";
+import VirusBSOD from "./components/VirusBSOD";
+import { WindowManagerProvider } from "./context/WindowManager";
+import { LocaleProvider, useLocale } from "./context/Locale";
 import Win98Loading from "./components/XPLoading";
 
 // Componente de Login
@@ -13,6 +16,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
   const [startTransition, setStartTransition] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAdminPopup, setShowAdminPopup] = useState(false);
+  const { lang, setLang, t, isAltFont, setAltFont } = useLocale();
 
   // Atualizar o relógio a cada minuto
   useEffect(() => {
@@ -56,8 +60,9 @@ function Login({ onLogin }: { onLogin: () => void }) {
     }, 2000);
   };
 
-  // Formatar a data no estilo do Windows 98
-  const formattedDate = currentTime.toLocaleDateString("pt-BR", {
+  // Formatar a data no estilo do Windows 98, respeitando o idioma
+  const locale = lang === "pt" ? "pt-BR" : "en-US";
+  const formattedDate = currentTime.toLocaleDateString(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -65,7 +70,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
   });
 
   // Formatar a hora no estilo do Windows 98
-  const formattedTime = currentTime.toLocaleTimeString("pt-BR", {
+  const formattedTime = currentTime.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -112,16 +117,119 @@ function Login({ onLogin }: { onLogin: () => void }) {
 
       <div className="login-window slide-up">
         <div className="login-title-bar">
-          <div className="title">Logon do Yandows</div>
+          <div className="title">{t("login.title")}</div>
           <div className="controls">
             <button aria-label="Close">×</button>
           </div>
         </div>
 
         <div className="login-content">
+          <div
+            className="win98-inset"
+            style={{
+              display: "flex",
+              gap: 12,
+              padding: 8,
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ minWidth: 70 }}>{t("login.lang")}:</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  className={`win98-button ${lang === "pt" ? "active" : ""}`}
+                  onClick={() => setLang("pt")}
+                  aria-label="Português"
+                  title="Português"
+                  aria-pressed={lang === "pt"}
+                  style={{
+                    padding: 0,
+                    width: 40,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src="/icons/flag-br.svg"
+                    alt="BR"
+                    width={16}
+                    height={12}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className={`win98-button ${lang === "en" ? "active" : ""}`}
+                  onClick={() => setLang("en")}
+                  aria-label="English"
+                  title="English"
+                  aria-pressed={lang === "en"}
+                  style={{
+                    padding: 0,
+                    width: 40,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src="/icons/flag-us.svg"
+                    alt="US"
+                    width={16}
+                    height={12}
+                  />
+                </button>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ minWidth: 80 }}>{t("login.font")}:</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  className={`win98-button ${!isAltFont ? "active" : ""}`}
+                  onClick={() => setAltFont(false)}
+                  title="MS Sans Serif"
+                  aria-pressed={!isAltFont}
+                  style={{
+                    width: 40,
+                    height: 24,
+                    lineHeight: "22px",
+                    padding: 0,
+                  }}
+                >
+                  <span
+                    style={{ fontFamily: "MS Sans Serif, Arial", fontSize: 12 }}
+                  >
+                    Tt
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className={`win98-button ${isAltFont ? "active" : ""}`}
+                  onClick={() => setAltFont(true)}
+                  title="Tahoma"
+                  aria-pressed={isAltFont}
+                  style={{
+                    width: 40,
+                    height: 24,
+                    lineHeight: "22px",
+                    padding: 0,
+                  }}
+                >
+                  <span style={{ fontFamily: "Tahoma, Arial", fontSize: 12 }}>
+                    Tt
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="login-header">
-            <h2>Digite seu nome de usuário e senha</h2>
-            <p>Conectar ao Yandows</p>
+            <h2>{t("login.username")}</h2>
+            <p>{t("login.subtitle")}</p>
           </div>
 
           <div className="login-users">
@@ -148,7 +256,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
 
           {selectedUser === "admin" && (
             <div className="password-input">
-              <label htmlFor="password">Senha:</label>
+              <label htmlFor="password">{t("login.password")}</label>
               <input
                 type="password"
                 id="password"
@@ -166,7 +274,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
               className="win98-button"
               onClick={() => setSelectedUser(null)}
             >
-              Cancelar
+              {t("login.cancel")}
             </button>
 
             <button
@@ -174,7 +282,11 @@ function Login({ onLogin }: { onLogin: () => void }) {
               onClick={handleLogin}
               disabled={loading}
             >
-              {loading ? "Entrando..." : "OK"}
+              {loading
+                ? lang === "pt"
+                  ? "Entrando..."
+                  : "Signing in..."
+                : t("login.ok")}
             </button>
           </div>
         </div>
@@ -260,6 +372,13 @@ function Login({ onLogin }: { onLogin: () => void }) {
           justify-content: center;
           gap: 8px;
         }
+
+        /* Selected state for Win98 buttons */
+        .win98-button.active {
+          border: 2px solid;
+          border-color: #808080 #ffffff #ffffff #808080;
+          outline: 1px dotted transparent;
+        }
       `}</style>
     </div>
   );
@@ -269,6 +388,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDesktop, setShowDesktop] = useState(false);
+  const [forceReboot, setForceReboot] = useState(false);
 
   // Verificar se o usuário já estava logado (para desenvolvimento)
   useEffect(() => {
@@ -292,40 +412,67 @@ export default function Home() {
     }, 300);
   };
 
-  if (!isLoggedIn) {
-    return <Login onLogin={handleLogin} />;
-  }
-
-  if (isLoading) {
-    return (
-      <Win98Loading
-        onLoadingComplete={handleLoadingComplete}
-        loadingTime={5000}
-      />
-    );
-  }
+  // Atalho Win+R abre /run; sequência "virus" dispara BSOD e reboot
+  useEffect(() => {
+    const buffer: string[] = [];
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "r" && (e.metaKey || e.ctrlKey)) {
+        // em Win, metaKey pode ser a tecla Windows; em outros, Ctrl R
+        window.location.assign("/run");
+      }
+      buffer.push(e.key.toLowerCase());
+      if (buffer.length > 5) buffer.shift();
+      if (buffer.join("") === "virus") {
+        setForceReboot(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <div
-      className={
-        showDesktop ? "desktop-container fade-in" : "desktop-container"
-      }
-    >
-      <Desktop />
-
-      <style jsx>{`
-        .desktop-container {
-          width: 100%;
-          height: 100vh;
-          overflow: hidden;
-          opacity: 0;
-          transition: opacity 0.5s ease-in-out;
-        }
-
-        .fade-in {
-          opacity: 1;
-        }
-      `}</style>
-    </div>
+    <LocaleProvider>
+      {!isLoggedIn ? (
+        <Login onLogin={handleLogin} />
+      ) : isLoading ? (
+        <Win98Loading
+          onLoadingComplete={handleLoadingComplete}
+          loadingTime={5000}
+        />
+      ) : (
+        <WindowManagerProvider>
+          <div
+            className={
+              showDesktop ? "desktop-container fade-in" : "desktop-container"
+            }
+          >
+            <Desktop />
+            {forceReboot && (
+              <VirusBSOD
+                onDone={() => {
+                  // volta para a tela de login simulando reboot
+                  setForceReboot(false);
+                  setIsLoggedIn(false);
+                  setIsLoading(false);
+                  setShowDesktop(false);
+                }}
+              />
+            )}
+            <style jsx>{`
+              .desktop-container {
+                width: 100%;
+                height: 100vh;
+                overflow: hidden;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+              }
+              .fade-in {
+                opacity: 1;
+              }
+            `}</style>
+          </div>
+        </WindowManagerProvider>
+      )}
+    </LocaleProvider>
   );
 }

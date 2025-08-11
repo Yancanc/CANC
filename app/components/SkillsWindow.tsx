@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useLocale } from "../context/Locale";
 
 interface SkillsWindowProps {
   onClose: () => void;
@@ -13,20 +14,17 @@ export default function SkillsWindow({
   onMinimize,
   isMinimized,
 }: SkillsWindowProps) {
+  const { t } = useLocale();
   return (
     <div className="skills-container">
       <div className="skills-header">
-        <h2>Minhas Habilidades</h2>
-        <p>
-          Ao longo da minha carreira, desenvolvi um conjunto diversificado de
-          habilidades técnicas. Abaixo estão as principais tecnologias e
-          ferramentas com as quais trabalho.
-        </p>
+        <h2>{t("skills.title")}</h2>
+        <p>{t("skills.intro")}</p>
       </div>
 
       <div className="skills-categories">
         <div className="skills-category">
-          <div className="category-title">Linguagens de Programação</div>
+          <div className="category-title">{t("skills.cat.languages")}</div>
           <div className="skills-list">
             <div className="skill-item">JavaScript</div>
             <div className="skill-item">TypeScript</div>
@@ -38,7 +36,7 @@ export default function SkillsWindow({
         </div>
 
         <div className="skills-category">
-          <div className="category-title">Frontend</div>
+          <div className="category-title">{t("skills.cat.frontend")}</div>
           <div className="skills-list">
             <div className="skill-item">React</div>
             <div className="skill-item">Next.js</div>
@@ -52,7 +50,7 @@ export default function SkillsWindow({
         </div>
 
         <div className="skills-category">
-          <div className="category-title">Backend & Banco de Dados</div>
+          <div className="category-title">{t("skills.cat.backend")}</div>
           <div className="skills-list">
             <div className="skill-item">Node.js</div>
             <div className="skill-item">Express</div>
@@ -68,7 +66,7 @@ export default function SkillsWindow({
         </div>
 
         <div className="skills-category">
-          <div className="category-title">DevOps & Ferramentas</div>
+          <div className="category-title">{t("skills.cat.devops")}</div>
           <div className="skills-list">
             <div className="skill-item">Git</div>
             <div className="skill-item">Docker</div>

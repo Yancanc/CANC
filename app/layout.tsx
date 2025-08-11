@@ -9,6 +9,29 @@ export const metadata: Metadata = {
   description: "A Yandows 98 themed portfolio website",
   viewport:
     "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
+  metadataBase: new URL("https://your-domain.example"),
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Yandows 98 Portfolio",
+    description: "Windows 98 themed portfolio by Yan Cancella",
+    url: "/",
+    siteName: "Yandows 98",
+    images: [
+      { url: "/window.svg", width: 1200, height: 630, alt: "Yandows 98" },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yandows 98 Portfolio",
+    description: "Windows 98 themed portfolio by Yan Cancella",
+    images: ["/window.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +56,7 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
+        <link rel="manifest" href="/manifest.json" />
 
         {/* Previne comportamentos indesejados no iOS */}
         <script
@@ -71,6 +95,41 @@ export default function RootLayout({
           }}
         />
       </head>
+      {/* Preconnect icons host */}
+      <link rel="preconnect" href="https://win98icons.alexmeub.com" />
+      {/* JSON-LD Person + WebSite */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Yan Cancella Barros Pereira",
+            url: "https://your-domain.example/",
+            sameAs: [
+              "https://github.com/Yancanc",
+              "https://www.linkedin.com/in/yancanc/",
+            ],
+            jobTitle: "Full Stack Developer",
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Yandows 98 Portfolio",
+            url: "https://your-domain.example/",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://your-domain.example/?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        }}
+      />
       <SpeedInsights />
       <body>{children}</body>
     </html>

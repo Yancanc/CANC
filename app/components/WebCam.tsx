@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLocale } from "../context/Locale";
 
 interface WebCamProps {
   onCapture?: (imageData: string) => void;
 }
 
 export default function WebCam({ onCapture }: WebCamProps) {
+  const { t } = useLocale();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const filterCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +21,9 @@ export default function WebCam({ onCapture }: WebCamProps) {
   const [selectedFilter, setSelectedFilter] = useState("retro");
   const [isFilterPreviewActive, setIsFilterPreviewActive] = useState(true);
   const filterPreviewIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isMirrored, setIsMirrored] = useState(true);
+  const lastPhotoRef = useRef<string | null>(null);
 
   // Inicializar a webcam
   useEffect(() => {
@@ -27,9 +32,10 @@ export default function WebCam({ onCapture }: WebCamProps) {
         setIsLoading(true);
         const constraints = {
           video: {
-            width: { ideal: 640 },
-            height: { ideal: 480 },
-            facingMode: "user",
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: { ideal: "user" },
+            frameRate: { ideal: 30, max: 60 },
           },
           audio: false,
         };
@@ -46,6 +52,10 @@ export default function WebCam({ onCapture }: WebCamProps) {
             console.error("Erro ao reproduzir vídeo:", err);
             throw err;
           });
+          // No iOS, é necessário inline e sem som para autoplay
+          videoRef.current.setAttribute("playsinline", "true");
+          videoRef.current.muted = true;
+          setIsRunning(true);
         }
       } catch (err) {
         console.error("Erro ao acessar a webcam:", err);
@@ -58,19 +68,67 @@ export default function WebCam({ onCapture }: WebCamProps) {
       }
     }
 
-    setupCamera();
+    // Não iniciar automaticamente em iOS; o botão abaixo inicia
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (!isIOS) setupCamera();
 
     // Limpar o stream quando o componente for desmontado
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-
+      try {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
+      } catch {}
       if (filterPreviewIntervalRef.current) {
         clearInterval(filterPreviewIntervalRef.current);
+        filterPreviewIntervalRef.current = null;
       }
     };
   }, []);
+  const startCamera = async () => {
+    // Em iOS o getUserMedia deve ser acionado por gesto do usuário
+    setHasError(false);
+    setErrorMessage("");
+    try {
+      setIsLoading(true);
+      const constraints = {
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: { ideal: "user" },
+          frameRate: { ideal: 30, max: 60 },
+        },
+        audio: false,
+      } as MediaStreamConstraints;
+      const mediaStream = await navigator.mediaDevices.getUserMedia(
+        constraints
+      );
+      setStream(mediaStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        videoRef.current.setAttribute("playsinline", "true");
+        videoRef.current.muted = true;
+        await videoRef.current.play();
+        setIsRunning(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setHasError(true);
+      setErrorMessage(t("webcam.permissionTip"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const stopCamera = () => {
+    try {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      setStream(null);
+      setIsRunning(false);
+    } catch {}
+  };
 
   // Efeito para iniciar a visualização do filtro em tempo real
   useEffect(() => {
@@ -115,15 +173,22 @@ export default function WebCam({ onCapture }: WebCamProps) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        // Desenhar o frame atual do vídeo no canvas
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Desenhar o frame atual do vídeo no canvas (opção espelhada)
+        if (isMirrored) {
+          ctx.save();
+          ctx.scale(-1, 1);
+          ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+          ctx.restore();
+        } else {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
 
         // Aplicar o filtro selecionado
         if (selectedFilter !== "none") {
           applyFilter(ctx, canvas.width, canvas.height);
         }
       }
-    }, 33); // Aproximadamente 30 FPS
+    }, 33); // ~30 FPS
   };
 
   // Função para aplicar filtros à imagem
@@ -310,6 +375,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    lastPhotoRef.current = capturedImage;
   };
 
   // Função para lidar com o carregamento do vídeo
@@ -359,7 +425,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
       <div className="webcam-header">
         <div className="filter-controls">
           <div className="filter-selector">
-            <label htmlFor="filter-select"> Filtro:</label>
+            <label htmlFor="filter-select"> {t("webcam.filter")}</label>
             <select
               id="filter-select"
               className="win98-select"
@@ -367,21 +433,51 @@ export default function WebCam({ onCapture }: WebCamProps) {
               onChange={(e) => setSelectedFilter(e.target.value)}
               disabled={isLoading || hasError || capturedImage !== null}
             >
-              <option value="retro">Retrô</option>
-              <option value="vhs">VHS</option>
-              <option value="pixel">Pixelado</option>
-              <option value="crt">Monitor CRT</option>
-              <option value="none">Sem Filtro</option>
+              <option value="retro">{t("webcam.filter.retro")}</option>
+              <option value="vhs">{t("webcam.filter.vhs")}</option>
+              <option value="pixel">{t("webcam.filter.pixel")}</option>
+              <option value="crt">{t("webcam.filter.crt")}</option>
+              <option value="none">{t("webcam.filter.none")}</option>
             </select>
+          </div>
+          <div className="mirror-toggle">
+            <input
+              id="mirror"
+              type="checkbox"
+              checked={isMirrored}
+              onChange={(e) => setIsMirrored(e.target.checked)}
+              style={{ marginRight: 6 }}
+            />
+            <label htmlFor="mirror">{t("webcam.mirror")}</label>
           </div>
 
           {!capturedImage && !isLoading && !hasError && (
             <button
               className="win98-button camera-toggle-button"
               onClick={toggleCamera}
-              title="Alternar câmera"
+              title={t("webcam.toggle")}
             >
-              Iniciar / Trocar Camera
+              {t("webcam.toggle")}
+            </button>
+          )}
+          {!isRunning && (
+            <button
+              className="win98-button camera-toggle-button"
+              onClick={startCamera}
+              title={t("webcam.start")}
+              style={{ marginLeft: 8 }}
+            >
+              {t("webcam.start")}
+            </button>
+          )}
+          {isRunning && (
+            <button
+              className="win98-button camera-toggle-button"
+              onClick={stopCamera}
+              title={t("webcam.stop")}
+              style={{ marginLeft: 8 }}
+            >
+              {t("webcam.stop")}
             </button>
           )}
         </div>
@@ -391,7 +487,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
         {isLoading ? (
           <div className="media-loading">
             <div className="loading-icon"></div>
-            <p>Carregando câmera...</p>
+            <p>{t("webcam.loading")}</p>
           </div>
         ) : hasError ? (
           <div className="webcam-error">
@@ -400,7 +496,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
               className="win98-button"
               onClick={() => window.location.reload()}
             >
-              Tentar Novamente
+              {t("webcam.retry")}
             </button>
           </div>
         ) : capturedImage ? (
@@ -412,10 +508,10 @@ export default function WebCam({ onCapture }: WebCamProps) {
             />
             <div className="image-actions">
               <button className="win98-button" onClick={discardPhoto}>
-                Nova Foto
+                {t("webcam.newPhoto")}
               </button>
               <button className="win98-button" onClick={downloadPhoto}>
-                Baixar
+                {t("webcam.download")}
               </button>
             </div>
           </div>
@@ -434,7 +530,12 @@ export default function WebCam({ onCapture }: WebCamProps) {
             />
 
             {/* Canvas para exibir o vídeo com filtro */}
-            <canvas ref={filterCanvasRef} className="filter-preview-canvas" />
+            <canvas
+              ref={filterCanvasRef}
+              className={`filter-preview-canvas ${
+                isMirrored ? "mirrored" : ""
+              }`}
+            />
 
             {countdown !== null && (
               <div className="countdown-overlay">
@@ -447,8 +548,24 @@ export default function WebCam({ onCapture }: WebCamProps) {
               onClick={capturePhoto}
               disabled={isLoading || hasError}
             >
-              📸 Tirar Foto
+              📸 {t("webcam.takePhoto")}
             </button>
+            {lastPhotoRef.current && (
+              <div
+                className="thumbnail"
+                title={t("webcam.lastPhoto") as string}
+              >
+                <img src={lastPhotoRef.current} alt={t("webcam.lastPhoto")} />
+                <a
+                  href={lastPhotoRef.current}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="thumb-open"
+                >
+                  {t("webcam.open")}
+                </a>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -456,13 +573,19 @@ export default function WebCam({ onCapture }: WebCamProps) {
       <div className="webcam-footer">
         <div className="webcam-status">
           {!isLoading && !hasError && !capturedImage
-            ? `Câmera pronta com filtro ${
-                selectedFilter === "none" ? "desativado" : selectedFilter
-              }.`
+            ? t("webcam.ready").replace(
+                "{filter}",
+                selectedFilter === "none"
+                  ? t("webcam.filter.disabled")
+                  : selectedFilter
+              )
             : capturedImage
-            ? `Foto capturada com filtro ${
-                selectedFilter === "none" ? "desativado" : selectedFilter
-              }.`
+            ? t("webcam.captured").replace(
+                "{filter}",
+                selectedFilter === "none"
+                  ? t("webcam.filter.disabled")
+                  : selectedFilter
+              )
             : ""}
         </div>
       </div>
@@ -490,6 +613,8 @@ export default function WebCam({ onCapture }: WebCamProps) {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
         .webcam-title {
@@ -502,6 +627,7 @@ export default function WebCam({ onCapture }: WebCamProps) {
           display: flex;
           align-items: center;
           gap: 10px;
+          flex-wrap: wrap;
         }
 
         .filter-selector {
@@ -546,6 +672,9 @@ export default function WebCam({ onCapture }: WebCamProps) {
           max-height: 100%;
           object-fit: contain;
         }
+        .filter-preview-canvas.mirrored {
+          transform: scaleX(1);
+        }
 
         .capture-button {
           position: absolute;
@@ -553,6 +682,31 @@ export default function WebCam({ onCapture }: WebCamProps) {
           padding: 8px 16px;
           font-size: 16px;
           z-index: 10;
+        }
+
+        .thumbnail {
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          width: 84px;
+          height: 64px;
+          border: 2px solid #000;
+          background: #c0c0c0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 2px;
+          z-index: 11;
+        }
+        .thumbnail img {
+          max-width: 100%;
+          max-height: 44px;
+          object-fit: cover;
+        }
+        .thumb-open {
+          font-size: 10px;
+          text-decoration: underline;
         }
 
         .countdown-overlay {

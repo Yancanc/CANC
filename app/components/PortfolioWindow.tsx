@@ -1,68 +1,62 @@
 "use client";
 
 import React from "react";
+import { useLocale } from "../context/Locale";
 
 const PortfolioWindow: React.FC = () => {
+  const { t } = useLocale();
   return (
     <div className="portfolio-container">
       <div className="portfolio-content">
         <div className="section">
-          <div className="section-title">Contribuições e Projetos</div>
-          <p className="portfolio-intro">
-            Ao longo da minha carreira no Grupo Águia Branca, contribuí
-            ativamente para diversos projetos significativos, demonstrando minha
-            capacidade de desenvolver soluções robustas e escaláveis. Abaixo
-            estão algumas das minhas contribuições mais relevantes:
-          </p>
+          <div className="section-title">
+            {t("portfolio.section.contributions")}
+          </div>
+          <p className="portfolio-intro">{t("portfolio.intro")}</p>
 
           <div className="portfolio-stats">
             <div className="stat-item">
               <div className="stat-number">500+</div>
-              <div className="stat-label">Commits</div>
+              <div className="stat-label">{t("portfolio.stats.commits")}</div>
             </div>
             <div className="stat-item">
               <div className="stat-number">15+</div>
-              <div className="stat-label">Projetos</div>
+              <div className="stat-label">{t("portfolio.stats.projects")}</div>
             </div>
             <div className="stat-item">
               <div className="stat-number">3000+</div>
-              <div className="stat-label">Pull Requests</div>
+              <div className="stat-label">{t("portfolio.stats.prs")}</div>
             </div>
           </div>
 
           <div className="contributions-image">
-            <div className="section-title">Meu Histórico de Contribuições</div>
+            <div className="section-title">
+              {t("portfolio.section.contributionsHistory")}
+            </div>
             <div className="image-container">
               <img
                 src="/contribuitions.jpeg"
-                alt="Histórico de contribuições no GitLab"
+                alt="Contributions history"
                 className="gitlab-contributions"
               />
             </div>
-            <p className="image-caption">
-              Histórico de contribuições em projetos no GitLab, demonstrando
-              consistência e comprometimento ao longo do tempo.
-            </p>
+            <p className="image-caption">{t("portfolio.caption")}</p>
           </div>
         </div>
 
         <div className="section">
-          <div className="section-title">Projetos Destacados</div>
+          <div className="section-title">{t("portfolio.section.featured")}</div>
           <div className="portfolio-projects">
             <div className="portfolio-project">
-              <h3>Kuruma Veículos</h3>
+              <h3>{t("portfolio.kuruma.title")}</h3>
               <p>
                 Desenvolvimento completo do site para a concessionária Toyota
                 ES/BH/BSB:
                 <ul>
-                  <li>Arquitetura front-end com Next.js e TypeScript</li>
-                  <li>
-                    Implementação de sistema de busca avançada de veículos
-                  </li>
-                  <li>
-                    Otimizações que reduziram o tempo de carregamento em 40%
-                  </li>
-                  <li>Integração com APIs de estoque e precificação</li>
+                  <li>{t("portfolio.kuruma.desc.li1")}</li>
+                  <li>{t("portfolio.kuruma.desc.li2")}</li>
+                  <li>{t("portfolio.kuruma.desc.li3")}</li>
+                  <li>{t("portfolio.kuruma.desc.li4")}</li>
                 </ul>
               </p>
               <a
@@ -71,7 +65,7 @@ const PortfolioWindow: React.FC = () => {
                 rel="noopener noreferrer"
                 className="project-link"
               >
-                Visitar Site
+                {t("portfolio.visitSite")}
               </a>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLocale } from "../context/Locale";
 
 // Polyfill para o método roundRect do canvas
 if (typeof window !== "undefined") {
@@ -56,11 +57,12 @@ interface Position {
 }
 
 export default function SnakeGame() {
+  const { t } = useLocale();
   // Tamanho do grid e da célula
   const GRID_SIZE = 20;
   const CELL_SIZE = 15;
-  const GAME_SPEED_DESKTOP = 150; // ms - velocidade para desktop
-  const GAME_SPEED_MOBILE = 200; // ms - velocidade mais lenta para mobile
+  const GAME_SPEED_DESKTOP = 8; // cells per second
+  const GAME_SPEED_MOBILE = 6; // cells per second (mobile)
 
   // Referência para o canvas
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -135,7 +137,9 @@ export default function SnakeGame() {
   }, []);
 
   // Referência para o intervalo do jogo
-  const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const lastTsRef = useRef<number>(0);
+  const stepAccumRef = useRef<number>(0);
 
   // Efeito para inicializar o canvas
   useEffect(() => {
@@ -171,10 +175,7 @@ export default function SnakeGame() {
     window.addEventListener("keydown", handleKeyPress);
 
     return () => {
-      // Limpar o intervalo quando o componente for desmontado
-      if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
-      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [isInitialized]);
@@ -226,17 +227,26 @@ export default function SnakeGame() {
     setIsPaused(false);
     isPausedRef.current = false;
 
-    // Iniciar o loop do jogo
-    if (gameLoopRef.current) {
-      clearInterval(gameLoopRef.current);
-    }
-
-    // Usar velocidade diferente para mobile
-    const gameSpeed = isMobile ? GAME_SPEED_MOBILE : GAME_SPEED_DESKTOP;
-
-    gameLoopRef.current = setInterval(() => {
-      updateGame();
-    }, gameSpeed);
+    // Iniciar o loop com requestAnimationFrame
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    lastTsRef.current = 0;
+    stepAccumRef.current = 0;
+    const speed = isMobile ? GAME_SPEED_MOBILE : GAME_SPEED_DESKTOP; // cells/sec
+    const stepMs = 1000 / speed;
+    const tick = (ts: number) => {
+      if (!lastTsRef.current) lastTsRef.current = ts;
+      const delta = ts - lastTsRef.current;
+      lastTsRef.current = ts;
+      if (!isPausedRef.current && !isGameOverRef.current) {
+        stepAccumRef.current += delta;
+        while (stepAccumRef.current >= stepMs) {
+          updateGame();
+          stepAccumRef.current -= stepMs;
+        }
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
   };
 
   // Função para pausar/despausar o jogo
@@ -342,9 +352,9 @@ export default function SnakeGame() {
   const gameOver = () => {
     setIsGameOver(true);
     isGameOverRef.current = true;
-    if (gameLoopRef.current) {
-      clearInterval(gameLoopRef.current);
-      gameLoopRef.current = null;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
   };
 
@@ -443,10 +453,14 @@ export default function SnakeGame() {
       ctx.fillStyle = "#FFFFFF";
       ctx.font = 'bold 20px "MS Sans Serif", Arial';
       ctx.textAlign = "center";
-      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 15);
+      ctx.fillText(
+        t("snake.gameOver"),
+        canvas.width / 2,
+        canvas.height / 2 - 15
+      );
       ctx.font = 'bold 16px "MS Sans Serif", Arial';
       ctx.fillText(
-        `Pontuação: ${snakeLengthRef.current - 3}`,
+        `${t("snake.score")}: ${snakeLengthRef.current - 3}`,
         canvas.width / 2,
         canvas.height / 2 + 15
       );
@@ -460,7 +474,7 @@ export default function SnakeGame() {
       ctx.fillStyle = "#FFFFFF";
       ctx.font = 'bold 20px "MS Sans Serif", Arial';
       ctx.textAlign = "center";
-      ctx.fillText("PAUSADO", canvas.width / 2, canvas.height / 2);
+      ctx.fillText(t("snake.paused"), canvas.width / 2, canvas.height / 2);
     }
   };
 
@@ -625,14 +639,14 @@ export default function SnakeGame() {
                 className="win98-button restart-button"
                 onClick={startGame}
               >
-                REINICIAR
+                {t("snake.restart")}
               </button>
             ) : (
               <button
                 className="win98-button pause-button"
                 onClick={togglePause}
               >
-                {isPaused ? "CONTINUAR" : "PAUSAR"}
+                {isPaused ? t("snake.resumeBtn") : t("snake.pauseBtn")}
               </button>
             )}
           </div>
@@ -640,18 +654,13 @@ export default function SnakeGame() {
       )}
 
       <div className="game-instructions">
-        <p className="desktop-instructions">
-          Use as setas ou WASD para mover a cobra. Pressione ESPAÇO para
-          pausar/continuar.
-        </p>
-        <p className="mobile-instructions">
-          Use os botões de direção para jogar.
-        </p>
+        <p className="desktop-instructions">{t("snake.desktopInstructions")}</p>
+        <p className="mobile-instructions">{t("snake.mobileInstructions")}</p>
         {isGameOver && (
           <p className="restart-instructions">
             {isMobile
-              ? "Toque no botão REINICIAR para jogar novamente."
-              : "Pressione ESPAÇO para reiniciar o jogo."}
+              ? t("snake.restart") + ": " + t("snake.mobileInstructions")
+              : t("snake.desktopInstructions")}
           </p>
         )}
       </div>

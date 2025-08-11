@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode, useRef } from "react";
+import { gsap } from "gsap";
+import { useWindowManager } from "../context/WindowManager";
 
 interface Win98WindowProps {
   title: string;
@@ -9,8 +11,10 @@ interface Win98WindowProps {
   initialSize?: { width: number; height: number };
   onClose?: () => void;
   onMinimize?: () => void;
+  onFocus?: (id: string) => void;
   isMinimized?: boolean;
   id: string;
+  zIndex?: number;
 }
 
 export default function Win98Window({
@@ -20,11 +24,17 @@ export default function Win98Window({
   initialSize = { width: 400, height: 300 },
   onClose,
   onMinimize,
+  onFocus,
   isMinimized = false,
   id,
+  zIndex = 10,
 }: Win98WindowProps) {
-  const [position, setPosition] = useState(initialPosition);
-  const [size, setSize] = useState(initialSize);
+  const { setWindowBounds, getWindowBounds } = useWindowManager();
+  const persisted = getWindowBounds(id);
+  const [position, setPosition] = useState(
+    persisted?.position || initialPosition
+  );
+  const [size, setSize] = useState(persisted?.size || initialSize);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isMaximized, setIsMaximized] = useState(false);
@@ -34,6 +44,13 @@ export default function Win98Window({
   });
   const [isClosing, setIsClosing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const minimizeBtnRef = useRef<HTMLButtonElement>(null);
+  const maximizeBtnRef = useRef<HTMLButtonElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(
+    null
+  );
   const [windowDimensions, setWindowDimensions] = useState({
     width: 1024,
     height: 768,
@@ -74,12 +91,17 @@ export default function Win98Window({
     );
   };
 
-  // Efeito para animação de abertura
+  // Efeito para animação de abertura com GSAP
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsOpening(false);
-    }, 300);
-    return () => clearTimeout(timer);
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    gsap.fromTo(
+      el,
+      { autoAlpha: 0, scale: 0.9, y: -8 },
+      { autoAlpha: 1, scale: 1, y: 0, duration: 0.22, ease: "power2.out" }
+    );
+    const t = setTimeout(() => setIsOpening(false), 240);
+    return () => clearTimeout(t);
   }, []);
 
   // Efeito para ajustar posição e tamanho em dispositivos móveis
@@ -111,6 +133,10 @@ export default function Win98Window({
     // Desativar arrastar em dispositivos móveis
     if (isMaximized || isMobile()) return;
 
+    if (onFocus) {
+      onFocus(id);
+    }
+
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -120,7 +146,16 @@ export default function Win98Window({
 
   // Também lidar com eventos de toque para iOS
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isMaximized || isMobile()) return;
+    if (isMobile()) {
+      const t = e.touches[0];
+      touchStartRef.current = { x: t.clientX, y: t.clientY, t: Date.now() };
+      return;
+    }
+    if (isMaximized) return;
+
+    if (onFocus) {
+      onFocus(id);
+    }
 
     const touch = e.touches[0];
     setIsDragging(true);
@@ -176,11 +211,27 @@ export default function Win98Window({
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    // Persistir posição após arraste
+    try {
+      setWindowBounds(id, { position, size });
+    } catch {}
   };
 
   // Também lidar com eventos de toque para iOS
   const handleTouchEnd = () => {
+    // Swipe down para minimizar (mobile)
+    if (isMobile() && touchStartRef.current) {
+      const start = touchStartRef.current;
+      touchStartRef.current = null;
+      const now = Date.now();
+      const dt = now - start.t;
+      // pegar a última posição conhecida do dedo pelo position? não temos; considerar delta por posição atual do window? simplificar: se houve start, usar event from window
+      // Sem o evento final, não calculamos; manter apenas via title bar handler abaixo
+    }
     setIsDragging(false);
+    try {
+      setWindowBounds(id, { position, size });
+    } catch {}
   };
 
   // Adicionar e remover event listeners para eventos de toque
@@ -270,30 +321,143 @@ export default function Win98Window({
       return;
     }
 
+    // Utilitário para medir a taskbar real
+    const getTaskbarHeight = (): number => {
+      const el = document.querySelector(".win98-taskbar") as HTMLElement | null;
+      return el
+        ? Math.round(el.getBoundingClientRect().height)
+        : windowDimensions.width <= 480
+        ? 30
+        : 40;
+    };
+
     // Comportamento normal para desktop
     if (!isMaximized) {
-      setPreMaximizeState({
-        position,
-        size,
-      });
-      setPosition({ x: 0, y: 0 });
-      // Ajuste para considerar a altura da taskbar
-      const taskbarHeight = windowDimensions.width <= 480 ? 30 : 40; // Responsivo para mobile
-      setSize({
+      // Animar até o estado maximizado
+      const taskbarHeight = getTaskbarHeight();
+      const targetPos = { x: 0, y: 0 };
+      const borderComp = 2; // compensa borda superior quando maximizado
+      const targetSize = {
         width: windowDimensions.width,
-        height: windowDimensions.height - taskbarHeight,
+        height: windowDimensions.height - taskbarHeight - borderComp,
+      };
+      setPreMaximizeState({ position, size });
+      const startPos = { ...position };
+      const startSize = { ...size };
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+      tl.to(
+        {},
+        {
+          duration: 0.22,
+          onUpdate: () => {
+            const p = tl.progress();
+            setPosition({
+              x: startPos.x + (targetPos.x - startPos.x) * p,
+              y: startPos.y + (targetPos.y - startPos.y) * p,
+            });
+            setSize({
+              width: startSize.width + (targetSize.width - startSize.width) * p,
+              height:
+                startSize.height + (targetSize.height - startSize.height) * p,
+            });
+          },
+        }
+      ).to(containerRef.current, {
+        scale: 1.01,
+        duration: 0.06,
+        yoyo: true,
+        repeat: 1,
       });
-      setIsMaximized(true);
+      setTimeout(() => setIsMaximized(true), 230);
     } else {
-      setPosition(preMaximizeState.position);
-      setSize(preMaximizeState.size);
-      setIsMaximized(false);
+      // Snap com GSAP
+      const targetPos = preMaximizeState.position;
+      const targetSize = preMaximizeState.size;
+      const startPos = { ...position };
+      const startSize = { ...size };
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+      tl.to(
+        {},
+        {
+          duration: 0.2,
+          onUpdate: () => {
+            const p = tl.progress();
+            setPosition({
+              x: startPos.x + (targetPos.x - startPos.x) * p,
+              y: startPos.y + (targetPos.y - startPos.y) * p,
+            });
+            setSize({
+              width: startSize.width + (targetSize.width - startSize.width) * p,
+              height:
+                startSize.height + (targetSize.height - startSize.height) * p,
+            });
+          },
+        }
+      ).to(containerRef.current, {
+        scale: 1.01,
+        duration: 0.06,
+        yoyo: true,
+        repeat: 1,
+      });
+      setTimeout(() => setIsMaximized(false), 220);
     }
   };
 
   const handleMinimize = () => {
     if (onMinimize) {
-      onMinimize();
+      // Animação robusta: fade+scale (evita cálculos de posição que podem falhar em maximizadas)
+      if (containerRef.current) {
+        gsap.to(containerRef.current, {
+          duration: 0.16,
+          scale: 0.9,
+          autoAlpha: 0,
+          ease: "power2.in",
+          onComplete: () => onMinimize(),
+        });
+      } else onMinimize();
+    }
+  };
+
+  // Gestos de swipe down (mobile) na title bar e conteúdo
+  const onTouchStartGesture = (e: React.TouchEvent) => {
+    if (!isMobile()) return;
+    const t = e.touches[0];
+    touchStartRef.current = { x: t.clientX, y: t.clientY, t: Date.now() };
+  };
+  const onTouchEndGesture = (e: React.TouchEvent) => {
+    if (!isMobile() || !touchStartRef.current) return;
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    const t = e.changedTouches[0];
+    const dy = t.clientY - start.y;
+    const dx = Math.abs(t.clientX - start.x);
+    const dt = Date.now() - start.t;
+    if (dy > 50 && dx < 40 && dt < 500) {
+      handleMinimize();
+    }
+  };
+
+  // Atalhos de teclado: ESC minimizar, Alt+F4 fechar, Alt+Space foca controles
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.altKey && e.key.toLowerCase() === "f4") {
+      e.preventDefault();
+      handleClose();
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      handleMinimize();
+      return;
+    }
+    if (e.altKey && e.code === "Space") {
+      e.preventDefault();
+      // foca a área de controles
+      (
+        minimizeBtnRef.current ||
+        maximizeBtnRef.current ||
+        closeBtnRef.current
+      )?.focus();
+      return;
     }
   };
 
@@ -329,12 +493,15 @@ export default function Win98Window({
       top: `${position.y}px`,
       width: `${size.width}px`,
       height: `${size.height}px`,
-      zIndex: isDragging ? 1000 : 10,
+      zIndex: isDragging ? zIndex + 1000 : zIndex,
       display: isMinimized ? "none" : "flex",
       flexDirection: "column",
       opacity: isClosing ? 0 : 1,
       transform: isOpening ? "scale(0.95)" : "scale(1)",
-      transition: isClosing || isOpening ? "all 0.2s ease-out" : "none",
+      transition:
+        isClosing || isOpening
+          ? "all 0.2s ease-out"
+          : "transform 0.12s ease-out",
       WebkitTransform: isOpening ? "scale(0.95)" : "scale(1)", // Para iOS
       WebkitTransition: isClosing || isOpening ? "all 0.2s ease-out" : "none", // Para iOS
     };
@@ -367,6 +534,17 @@ export default function Win98Window({
       }
     }
 
+    // Quando maximizado em desktop, forçar 100% do container
+    if (!isMobile() && isMaximized) {
+      return {
+        ...baseStyle,
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%",
+      } as React.CSSProperties;
+    }
+
     // Ajustes específicos para iOS em desktop
     if (isIOS() && !isMobile()) {
       return {
@@ -390,22 +568,48 @@ export default function Win98Window({
           isClosing ? "window-closing" : ""
         } ${isOpening ? "window-opening" : ""} ${isIOS() ? "ios-device" : ""}`}
         style={getWindowStyle()}
+        ref={containerRef}
         data-window-id={id}
+        role="dialog"
+        aria-label={title}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        onMouseDown={() => onFocus && onFocus(id)}
       >
         <div
           className="win98-title-bar"
           onMouseDown={handleDragStart}
-          onTouchStart={handleTouchStart}
+          onTouchStart={(e) => {
+            handleTouchStart(e);
+            onTouchStartGesture(e);
+          }}
+          onTouchEnd={onTouchEndGesture}
         >
           <div className="title">{title}</div>
           <div className="controls">
-            <button className="minimize-button" onClick={handleMinimize}>
+            <button
+              className="minimize-button"
+              onClick={handleMinimize}
+              aria-label="Minimizar"
+              ref={minimizeBtnRef}
+            >
               _
             </button>
-            <button className="maximize-button" onClick={handleMaximize}>
+            <button
+              className="maximize-button"
+              onClick={handleMaximize}
+              aria-label={isMaximized ? "Restaurar" : "Maximizar"}
+              aria-pressed={isMaximized}
+              ref={maximizeBtnRef}
+            >
               □
             </button>
-            <button className="close-button" onClick={handleClose}>
+            <button
+              className="close-button"
+              onClick={handleClose}
+              aria-label="Fechar"
+              ref={closeBtnRef}
+            >
               ×
             </button>
           </div>
@@ -413,6 +617,8 @@ export default function Win98Window({
         <div
           className="win98-window-content"
           style={{ flex: 1, overflow: "auto" }}
+          onTouchStart={onTouchStartGesture}
+          onTouchEnd={onTouchEndGesture}
         >
           {children}
         </div>
@@ -420,11 +626,11 @@ export default function Win98Window({
 
       <style jsx>{`
         .window-opening {
-          animation: windowOpen 0.3s ease-out;
+          /* Abertura controlada por GSAP */
         }
 
         .window-closing {
-          animation: windowClose 0.3s ease-out forwards;
+          animation: windowClose 0.2s ease-out forwards;
         }
 
         @keyframes windowOpen {
@@ -452,7 +658,7 @@ export default function Win98Window({
           }
           100% {
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.9);
           }
         }
       `}</style>

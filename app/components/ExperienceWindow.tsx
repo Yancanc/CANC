@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useLocale } from "../context/Locale";
 
 interface ExperienceWindowProps {
   onClose: () => void;
@@ -13,160 +14,80 @@ export default function ExperienceWindow({
   onMinimize,
   isMinimized,
 }: ExperienceWindowProps) {
+  const { t } = useLocale();
   return (
     <div className="experience-container">
       <div className="experience-header">
-        <h2>Experiência Profissional</h2>
-        <p>
-          Minha trajetória profissional como desenvolvedor full stack, com foco
-          em tecnologias web modernas e soluções escaláveis.
-        </p>
+        <h2>{t("title.experience")}</h2>
+        <p>{t("exp.header.desc")}</p>
       </div>
 
       <div className="experience-timeline">
         <div className="experience-item">
           <div className="experience-title">
-            <h3>Desenvolvedor Full Stack Pleno</h3>
-            <span className="company">Live! - Empresa Têxtil</span>
-            <span className="period">Junho de 2024 – Atual</span>
+            <h3>{t("exp.live.title")}</h3>
+            <span className="company">{t("exp.live.company")}</span>
+            <span className="period">{t("exp.live.period")}</span>
           </div>
           <div className="experience-details">
             <ul className="experience-list">
-              <li>
-                Desenvolvimento e manutenção de sistemas para empresa têxtil de
-                Santa Catarina utilizando MongoDB, PostgreSQL, PHP, Laravel,
-                Node.js, JavaScript e Next.js.
-              </li>
-              <li>
-                Criação de painéis de CRM personalizados para gestão de clientes
-                e processos internos.
-              </li>
-              <li>Manutenção e evolução dos sites e sistemas da empresa.</li>
-              <li>
-                Implementação de soluções escaláveis para gestão de produção
-                têxtil.
-              </li>
-              <li>
-                Desenvolvimento de APIs para integração entre sistemas internos.
-              </li>
+              <li>{t("exp.live.li1")}</li>
+              <li>{t("exp.live.li2")}</li>
+              <li>{t("exp.live.li3")}</li>
+              <li>{t("exp.live.li4")}</li>
+              <li>{t("exp.live.li5")}</li>
             </ul>
           </div>
         </div>
 
         <div className="experience-item">
           <div className="experience-title">
-            <h3>Desenvolvedor Full Stack Pleno</h3>
-            <span className="company">Grupo Águia Branca</span>
-            <span className="period">Julho de 2023 – Maio de 2024</span>
+            <h3>{t("exp.aguia.title")}</h3>
+            <span className="company">{t("exp.aguia.company")}</span>
+            <span className="period">{t("exp.aguia.period")}</span>
           </div>
           <div className="experience-details">
             <ul className="experience-list">
-              <li>
-                Desenvolvimento e manutenção de APIs e websites utilizando
-                TypeScript, Node.js e Next.js.
-              </li>
-              <li>
-                Líder no desenvolvimento e manutenção do site BYD Vitória Motors
-                (vitoriamotorsbyd.com.br) e do site Toyota ES/BH/BSB
-                (https://www.kurumaveiculos.com.br).
-              </li>
-              <li>
-                Criação e liderança de um CMS integrado para gerenciamento de
-                banners em ambos os sites.
-              </li>
-              <li>
-                Desenvolvimento de uma API robusta com:
-                <ul>
-                  <li>Sistema de autenticação seguro.</li>
-                  <li>CRUD completo.</li>
-                  <li>
-                    Integração com Followize para envio e sanitização de dados
-                    de formulários.
-                  </li>
-                </ul>
-              </li>
-              <li>
-                Implementação de scripts em Python para:
-                <ul>
-                  <li>
-                    Processos de conversão de imagens para WebP e
-                    redimensionamento em massa.
-                  </li>
-                  <li>Bate-bases e validação de informações de clientes.</li>
-                </ul>
-              </li>
-              <li>
-                Manutenção de sistemas legados em PHP, incluindo correções e
-                criação de novas páginas.
-              </li>
-              <li>
-                Redução de 40% no tempo de carregamento do site Toyota ES/BH/BSB
-                após otimizações.
-              </li>
-              <li>
-                Experiência em infraestrutura com Microsoft Azure para
-                implementação e manutenção de sistemas.
-              </li>
+              <li>{t("exp.aguia.li1")}</li>
+              <li>{t("exp.aguia.li2")}</li>
+              <li>{t("exp.aguia.li3")}</li>
+              <li>{t("exp.aguia.li4")}</li>
+              <li>{t("exp.aguia.li5")}</li>
+              <li>{t("exp.aguia.li6")}</li>
+              <li>{t("exp.aguia.li7")}</li>
+              <li>{t("exp.aguia.li8")}</li>
             </ul>
           </div>
         </div>
 
         <div className="experience-item">
           <div className="experience-title">
-            <h3>Desenvolvedor Full Stack Júnior</h3>
-            <span className="company">Globalsys</span>
-            <span className="period">Junho 2022 – Julho de 2023</span>
+            <h3>{t("exp.globalsys.title")}</h3>
+            <span className="company">{t("exp.globalsys.company")}</span>
+            <span className="period">{t("exp.globalsys.period")}</span>
           </div>
           <div className="experience-details">
             <ul className="experience-list">
-              <li>
-                Criação e manutenção de soluções utilizando Vue.js, React, PHP e
-                GraphQL.
-              </li>
-              <li>
-                Identificação e correção de falhas para garantir alta qualidade
-                e desempenho das aplicações.
-              </li>
-              <li>
-                Automação e otimização de processos, aumentando a eficiência da
-                equipe.
-              </li>
-              <li>
-                Desenvolvimento de soluções para clientes como Jurong e GVBus,
-                atendendo demandas específicas de cada negócio.
-              </li>
-              <li>
-                Criação de sites como o Happn (plataforma imobiliária), com
-                integração de APIs e interfaces otimizadas.
-              </li>
-              <li>
-                Implementação de soluções interativas e eficientes para garantir
-                maior engajamento e satisfação dos usuários finais.
-              </li>
+              <li>{t("exp.globalsys.li1")}</li>
+              <li>{t("exp.globalsys.li2")}</li>
+              <li>{t("exp.globalsys.li3")}</li>
+              <li>{t("exp.globalsys.li4")}</li>
+              <li>{t("exp.globalsys.li5")}</li>
             </ul>
           </div>
         </div>
 
         <div className="experience-item">
           <div className="experience-title">
-            <h3>Desenvolvedor Full Stack Estagiário</h3>
-            <span className="company">Grupo Super</span>
-            <span className="period">Março de 2022 – Junho de 2022</span>
+            <h3>{t("exp.gruposuper.title")}</h3>
+            <span className="company">{t("exp.gruposuper.company")}</span>
+            <span className="period">{t("exp.gruposuper.period")}</span>
           </div>
           <div className="experience-details">
             <ul className="experience-list">
-              <li>
-                Desenvolvimento de páginas em PHP para o sistema interno do
-                Grupo Super.
-              </li>
-              <li>
-                Colaboração em projetos de otimização e manutenção de
-                funcionalidades.
-              </li>
-              <li>
-                Desenvolvimento de módulo de relatórios em PHP que reduziu o
-                tempo de processamento em 20%.
-              </li>
+              <li>{t("exp.gruposuper.li1")}</li>
+              <li>{t("exp.gruposuper.li2")}</li>
+              <li>{t("exp.gruposuper.li3")}</li>
             </ul>
           </div>
         </div>

@@ -1,28 +1,30 @@
 "use client";
 
 import React from "react";
+import { useLocale } from "../context/Locale";
 
 const ContactWindow: React.FC = () => {
+  const { t } = useLocale();
   return (
     <div className="contact-content">
       <div className="section">
         <div className="contact-card">
           <div className="contact-header">
             <h3>Yan Cancella Barros Pereira</h3>
-            <p className="contact-title">Desenvolvedor Full Stack - Pleno</p>
+            <p className="contact-title">{t("contact.role")}</p>
           </div>
 
           <div className="contact-details">
             <div className="contact-item">
               <div className="contact-text">
-                <strong>Email:</strong>
+                <strong>{t("label.email")}</strong>
                 <p>yan.cancella@outlook.com</p>
               </div>
             </div>
 
             <div className="contact-item">
               <div className="contact-text">
-                <strong>LinkedIn:</strong>
+                <strong>{t("label.linkedin")}</strong>
                 <p>
                   <a
                     href="https://www.linkedin.com/in/yancanc/"
@@ -38,14 +40,14 @@ const ContactWindow: React.FC = () => {
 
             <div className="contact-item">
               <div className="contact-text">
-                <strong>Localização:</strong>
-                <p>Curitiba, Paraná - Brasil</p>
+                <strong>{t("label.location")}</strong>
+                <p>{t("contact.locationValue")}</p>
               </div>
             </div>
 
             <div className="contact-item">
               <div className="contact-text">
-                <strong>GitHub:</strong>
+                <strong>{t("label.github")}</strong>
                 <p>
                   <a
                     href="https://github.com/Yancanc"

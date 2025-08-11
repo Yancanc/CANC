@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLocale } from "../context/Locale";
 import TaskbarClock from "./TaskbarClock";
 
 interface Window {
@@ -15,6 +16,7 @@ interface TaskbarProps {
   onContactClick: () => void;
   onSkillsClick: () => void;
   onPortfolioClick: () => void;
+  onCVClick: () => void;
   openWindows: Window[];
   onWindowRestore: (id: string) => void;
 }
@@ -25,12 +27,14 @@ export default function Taskbar({
   onContactClick,
   onSkillsClick,
   onPortfolioClick,
+  onCVClick,
   openWindows,
   onWindowRestore,
 }: TaskbarProps) {
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startButtonRef = useRef<HTMLButtonElement>(null);
+  const { t } = useLocale();
 
   const toggleStartMenu = () => {
     setStartMenuOpen(!startMenuOpen);
@@ -129,7 +133,7 @@ export default function Taskbar({
             height="20"
             style={{ marginRight: "4px" }}
           />
-          <span>Menu</span>
+          <span>{t("start.menu")}</span>
         </button>
 
         <div className="taskbar-divider"></div>
@@ -143,6 +147,8 @@ export default function Taskbar({
                 !window.isMinimized ? "active" : ""
               }`}
               onClick={() => handleWindowButtonClick(window.id)}
+              aria-pressed={!window.isMinimized}
+              aria-label={window.title}
             >
               {window.title}
             </button>
@@ -204,7 +210,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Sobre Mim</span>
+              <span>{t("menu.about")}</span>
             </div>
 
             <div
@@ -218,7 +224,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Projetos</span>
+              <span>{t("menu.projects")}</span>
             </div>
 
             <div
@@ -232,7 +238,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Contato</span>
+              <span>{t("menu.contact")}</span>
             </div>
 
             <div
@@ -246,7 +252,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Habilidades</span>
+              <span>{t("menu.skills")}</span>
             </div>
 
             <div
@@ -260,7 +266,21 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Portfólio</span>
+              <span>{t("menu.portfolio")}</span>
+            </div>
+
+            <div
+              className="menu-item"
+              onClick={() => handleMenuItemClick(onCVClick)}
+            >
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/notepad_file_gear-2.png"
+                alt="Currículo"
+                width="16"
+                height="16"
+                style={{ marginRight: "8px" }}
+              />
+              <span>{t("menu.cv")}</span>
             </div>
 
             <div className="menu-divider"></div>
@@ -268,7 +288,11 @@ export default function Taskbar({
             <div
               className="menu-item"
               onClick={() =>
-                window.open("https://github.com/Yancanc", "_blank")
+                window.open(
+                  "https://github.com/Yancanc",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
               }
             >
               <img
@@ -284,7 +308,11 @@ export default function Taskbar({
             <div
               className="menu-item"
               onClick={() =>
-                window.open("https://www.linkedin.com/in/yancanc/", "_blank")
+                window.open(
+                  "https://www.linkedin.com/in/yancanc/",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
               }
             >
               <img
@@ -301,7 +329,13 @@ export default function Taskbar({
 
             <div
               className="menu-item"
-              onClick={() => window.open("/Curriculum 2025 - PT.pdf", "_blank")}
+              onClick={() =>
+                window.open(
+                  "/Curriculum 2025 - PT.pdf",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
             >
               <img
                 src="https://win98icons.alexmeub.com/icons/png/notepad_file_gear-2.png"
@@ -310,7 +344,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Baixar CV</span>
+              <span>{t("menu.downloadCV")}</span>
             </div>
 
             <div
@@ -324,7 +358,7 @@ export default function Taskbar({
                 height="16"
                 style={{ marginRight: "8px" }}
               />
-              <span>Sair</span>
+              <span>{t("menu.exit")}</span>
             </div>
           </div>
         </div>

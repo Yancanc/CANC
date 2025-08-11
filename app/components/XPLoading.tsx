@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocale } from "../context/Locale";
 
 interface Win98LoadingProps {
   onLoadingComplete?: () => void;
@@ -11,16 +12,26 @@ export default function Win98Loading({
   onLoadingComplete,
   loadingTime = 3000,
 }: Win98LoadingProps) {
+  const { lang } = useLocale();
   const [loadingText, setLoadingText] = useState("Iniciando o Yandows...");
   const [loadingStep, setLoadingStep] = useState(0);
 
-  const loadingMessages = [
-    "Iniciando o Yandows...",
-    "Carregando configurações...",
-    "Preparando área de trabalho...",
-    "Carregando componentes do sistema...",
-    "Bem-vindo ao Yandows",
-  ];
+  const loadingMessages =
+    lang === "en"
+      ? [
+          "Starting Yandows...",
+          "Loading settings...",
+          "Preparing desktop...",
+          "Loading system components...",
+          "Welcome to Yandows",
+        ]
+      : [
+          "Iniciando o Yandows...",
+          "Carregando configurações...",
+          "Preparando área de trabalho...",
+          "Carregando componentes do sistema...",
+          "Bem-vindo ao Yandows",
+        ];
 
   useEffect(() => {
     // Simular diferentes etapas de carregamento
