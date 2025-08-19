@@ -10,6 +10,8 @@
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease;
+  /* Safe-area padding for iOS notch and home bar */
+  padding: env(safe-area-inset-top) 8px env(safe-area-inset-bottom) 8px;
 }
 
 @keyframes fadeIn {
@@ -28,13 +30,21 @@
   box-shadow: 1px 1px 0 #000000;
   width: 450px;
   max-width: 90%;
-  max-height: 90vh;
+  /* Use dynamic viewport unit to avoid iOS 100vh issues */
+  max-height: calc(var(--vh, 1vh) * 85);
   display: flex;
   flex-direction: column;
   animation: popIn 0.3s ease;
+  overflow: hidden; /* ensure inner area scrolls, not the shell */
 
   @media (max-width: 768px) {
     width: 85%;
+  }
+
+  @media (max-width: 480px) {
+    width: 92%;
+    /* Slightly smaller on very small screens */
+    max-height: calc(var(--vh, 1vh) * 75);
   }
 }
 
@@ -92,6 +102,8 @@
   padding: 15px;
   display: flex;
   overflow-y: auto;
+  flex: 1;        /* take available height */
+  min-height: 0;  /* allow child to shrink for scrolling */
 
   .tutorial-icon {
     margin-right: 15px;
@@ -146,6 +158,11 @@
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #808080;
+  flex-shrink: 0; /* keep footer visible; content scrolls */
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+  }
 
   .dont-show-again {
     display: flex;
