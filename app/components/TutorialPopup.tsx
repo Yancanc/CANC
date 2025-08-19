@@ -1,17 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useLocale } from "../context/Locale";
 
 interface TutorialPopupProps {
   onClose: () => void;
 }
 
 const TutorialPopup: React.FC<TutorialPopupProps> = ({ onClose }) => {
+  const { t } = useLocale();
   return (
     <div className="tutorial-popup-overlay">
       <div className="tutorial-popup">
         <div className="win98-title-bar">
-          <div className="title">Bem-vindo ao Yandows 98</div>
+          <div className="title">{t("tutorial.title")}</div>
           <div className="controls">
             <button onClick={onClose} className="close-btn" aria-label="Close">
               ×
@@ -28,35 +30,25 @@ const TutorialPopup: React.FC<TutorialPopupProps> = ({ onClose }) => {
             />
           </div>
           <div className="tutorial-message">
-            <h3>Dicas de Navegação</h3>
+            <h3>{t("tutorial.tips")}</h3>
             <ul>
               <li>
-                <b>Abrir programas:</b> Clique nos ícones da área de trabalho ou
-                na barra de tarefas.
+                <b>{t("tutorial.open")}</b> {t("tutorial.open.desc")}
               </li>
               <li>
-                <b>Fechar janelas:</b> Clique no botão{" "}
-                <span className="fake-close-btn">×</span> no canto superior
-                direito de cada janela.
+                <b>{t("tutorial.close")}</b> {t("tutorial.close.desc")}
               </li>
               <li>
-                <b>Minimizar janelas:</b> Clique no botão{" "}
-                <span className="fake-minimize-btn">_</span> para minimizar para
-                a barra de tarefas.
+                <b>{t("tutorial.minimize")}</b> {t("tutorial.minimize.desc")}
               </li>
               <li>
-                <b>Restaurar janelas:</b> Clique no ícone da janela na barra de
-                tarefas para restaurá-la.
+                <b>{t("tutorial.restore")}</b> {t("tutorial.restore.desc")}
               </li>
               <li>
-                <b>Mover janelas:</b> Clique e arraste a barra de título da
-                janela.
+                <b>{t("tutorial.move")}</b> {t("tutorial.move.desc")}
               </li>
             </ul>
-            <p className="tutorial-note">
-              Explore meu portfólio clicando nos diferentes ícones da área de
-              trabalho!
-            </p>
+            <p className="tutorial-note">{t("tutorial.note")}</p>
           </div>
         </div>
         <div className="tutorial-popup-footer">
@@ -71,10 +63,10 @@ const TutorialPopup: React.FC<TutorialPopupProps> = ({ onClose }) => {
                 }
               }}
             />
-            <span>Não mostrar novamente</span>
+            <span>{t("tutorial.dontShowAgain")}</span>
           </label>
           <button className="win98-button" onClick={onClose}>
-            Entendi
+            {t("tutorial.ok")}
           </button>
         </div>
       </div>

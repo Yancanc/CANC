@@ -383,6 +383,24 @@ const dict: Dictionary = {
   "webcam.mirror": { pt: "Espelhar imagem", en: "Mirror image" },
   "webcam.lastPhoto": { pt: "Última foto", en: "Last photo" },
   "webcam.open": { pt: "Abrir", en: "Open" },
+  
+  // Tutorial Popup
+  "tutorial.title": { pt: "Bem-vindo ao Yandows 98", en: "Welcome to Yandows 98" },
+  "tutorial.tips": { pt: "Dicas de Navegação", en: "Navigation Tips" },
+  "tutorial.open": { pt: "Abrir programas:", en: "Open programs:" },
+  "tutorial.open.desc": { pt: "Clique nos ícones da área de trabalho ou na barra de tarefas.", en: "Click desktop icons or the taskbar." },
+  "tutorial.close": { pt: "Fechar janelas:", en: "Close windows:" },
+  "tutorial.close.desc": { pt: "Clique no botão × no canto superior direito de cada janela.", en: "Click the × button at the top-right of each window." },
+  "tutorial.minimize": { pt: "Minimizar janelas:", en: "Minimize windows:" },
+  "tutorial.minimize.desc": { pt: "Clique no botão _ para minimizar para a barra de tarefas.", en: "Click the _ button to minimize to the taskbar." },
+  "tutorial.restore": { pt: "Restaurar janelas:", en: "Restore windows:" },
+  "tutorial.restore.desc": { pt: "Clique no ícone da janela na barra de tarefas para restaurá-la.", en: "Click the window icon on the taskbar to restore it." },
+  "tutorial.move": { pt: "Mover janelas:", en: "Move windows:" },
+  "tutorial.move.desc": { pt: "Clique e arraste a barra de título da janela.", en: "Click and drag the window title bar." },
+  "tutorial.note": { pt: "Explore meu portfólio clicando nos diferentes ícones da área de trabalho!", en: "Explore my portfolio by clicking the different desktop icons!" },
+  "tutorial.dontShowAgain": { pt: "Não mostrar novamente", en: "Don't show again" },
+  "tutorial.ok": { pt: "Entendi", en: "Got it" },
+  
 };
 
 interface LocaleContextValue {
