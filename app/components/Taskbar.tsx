@@ -34,7 +34,7 @@ export default function Taskbar({
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startButtonRef = useRef<HTMLButtonElement>(null);
-  const { t } = useLocale();
+  const { t, lang, setLang } = useLocale();
 
   const toggleStartMenu = () => {
     setStartMenuOpen(!startMenuOpen);
@@ -153,6 +153,30 @@ export default function Taskbar({
               {window.title}
             </button>
           ))}
+        </div>
+
+        {/* Seletor de idioma */}
+        <div className="taskbar-lang" style={{ display: "flex", gap: 6, alignItems: "center", marginRight: 8 }}>
+          <button
+            type="button"
+            className={`win98-button ${lang === "pt" ? "active" : ""}`}
+            onClick={() => setLang("pt")}
+            aria-label="Português"
+            title="Português"
+            style={{ padding: 0, width: 28, height: 20, display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <img src="/icons/flag-br.svg" alt="BR" width={14} height={10} />
+          </button>
+          <button
+            type="button"
+            className={`win98-button ${lang === "en" ? "active" : ""}`}
+            onClick={() => setLang("en")}
+            aria-label="English"
+            title="English"
+            style={{ padding: 0, width: 28, height: 20, display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <img src="/icons/flag-us.svg" alt="US" width={14} height={10} />
+          </button>
         </div>
 
         <TaskbarClock />
@@ -349,7 +373,7 @@ export default function Taskbar({
 
             <div
               className="menu-item"
-              onClick={() => (window.location.href = "/login")}
+              onClick={() => window.location.reload()}
             >
               <img
                 src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png"
